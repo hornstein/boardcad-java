@@ -1,0 +1,42 @@
+Major
+*Detailed spec sheet ala midget (WORK IN PROGRESS)
+*FileDialog with board preview/icons (WORK IN PROGRESS)
+*
+
+
+Minor
+*Refactor drawing functions to use path instead of drawing single lines (WORK IN PROGRESS)
+*Add filling of outlines, crosssections, etc. Gradient filling would be nice
+*Create a new subMenu for Nurbs related functions at the ContextMenu to keep the ContextMenu as short as possible. 
+	
+	
+DONE
+*Add Multi-Language strings for BoardSpec buttons toolTipTexts and ControlPointPanel border text
+*Check scaling
+*Accept same Board/Blank positioning parameters from file created/used with aps program.
+*HWS printing (WORK IN PROGRESS)
+*Check speed when cutting
+*Fix .srf reader
+*Fix toolpath errors
+	*Toolpath seems to go further one way than the other FIXED
+*SimpleBullnoseCutter compensation
+	*Fix errors
+
+*Cut nose and tail
+	*Option
+	*Change toolpath to cut into stringer from both sides
+
+*Cut stringer
+	*Option
+	*Dimension of stringer to avoid
+	*Option to cut into stringer from both sides to avoid cutting stringer with center of cutter. (this is more critical for the bottom cut as it's usually a deeper cut)
+	
+*Cut outline
+	*Option to outline during which side (deck or bottom)
+	*Option to cut only the outline. Cut with blank deck facing up preferably.
+
+*Move sideways smooth on surface
+	*Between cuts
+	*When changing sides
+*Quad view class 
+	

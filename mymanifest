@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Application-Name: BoardCAD
+Main-Class: boardcad.gui.jdk.BoardCAD
+Permissions: all-permissions
+Codebase: *
+Class-Path: . gluegen-rt.jar j3dcore.jar j3dutils.jar jogl-all.jar vecmath.jar jython.jar Lib.jar jythonconsole.jar
+
