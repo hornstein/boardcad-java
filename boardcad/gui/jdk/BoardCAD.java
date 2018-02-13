@@ -4560,8 +4560,76 @@ public class BoardCAD implements Runnable, ActionListener, ItemListener, KeyEven
 			}
 
 		};
+//PW Mods here
+		final AbstractAction bezier_patch_num_bot_pts = new AbstractAction() {
+			static final long serialVersionUID=1L;
+			{
+				this.putValue(Action.NAME, "   Set Number of Control Points on Bottom Surface between Stringer and Tuck Point");
+				// this.putValue(Action.ACCELERATOR_KEY,
+				// KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, 0));
+			};
+
+			public void actionPerformed(ActionEvent arg0) {
+
+			Object[] possibilities = {0,1,2,3,4};
+			int s = (int)JOptionPane.showInputDialog(
+                    mFrame,
+                    "How many additional Control Points are between the\n"
+					+ "Centre and Tuck on the Bottom of the Cross Sections?\n"
+					+ "NOTE: All Cross Sections must have the same number of control points.",
+                    "Number of Bottom Control Points",
+                    JOptionPane.PLAIN_MESSAGE,
+                    null,
+                    possibilities,
+                    0);
+			//board_handler.set_nr_of_bottom_ctrl_pts(s);
+			mCurrentBrd.set_nr_of_bottom_ctrl_pts(s);
+
+//JUNK?
+//BoardCAD.getInstance().getFrame()
+
+			}
+
+		};
+		
+		final AbstractAction bezier_patch_channel_curved = new AbstractAction() {
+			static final long serialVersionUID=1L;
+			{
+				this.putValue(Action.NAME, "   Set Channel Interpolation Behavior");
+				// this.putValue(Action.ACCELERATOR_KEY,
+				// KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, 0));
+			};
+
+			public void actionPerformed(ActionEvent arg0) {
+
+				Object[] possibilities = {"Linear", "Curved"};
+				String s = (String)JOptionPane.showInputDialog(
+						mFrame,
+						"How should the channels be interpolated?\n"
+						+ "Linearly (default) = straight lines between corresponding cross section control points\n"
+						+ "Curved = channels interpolation follows board width (e.g. Go Fish)",
+						"Interpolation Algorithm",
+						JOptionPane.PLAIN_MESSAGE,
+						null,
+						possibilities,
+						"Linear");
+				if (s == "Linear"){
+					//board_handler.set_curved_channel_iterpolation(false);
+					mCurrentBrd.set_curved_channel_iterpolation(false);
+				} else {
+					//board_handler.set_curved_channel_iterpolation(true);
+					mCurrentBrd.set_curved_channel_iterpolation(true);
+				}
+			}
+
+		};
+
 		menu3D.add(bezier_patch);
-        menu3D.add(approximate);
+		menu3D.add(bezier_patch_num_bot_pts);
+		menu3D.add(bezier_patch_channel_curved);
+		menu3D.addSeparator();
+//PW Mods here		
+		menu3D.add(approximate);
         menu3D.add(approximate_open);
         menu3D.add(approximate2);
 

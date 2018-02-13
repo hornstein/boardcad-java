@@ -2917,6 +2917,25 @@ public class NurbsBoard extends AbstractBoard implements Cloneable
 				for(int j=0;j<11;j++)
 					bottom.set_control_point(i,j,new NurbsPoint(0,0,0));
 		}
+		// PW Insert for Channel Correction - Typical Cross section = 5, so use standard Deck profile, but add more bottom segments?
+		// 2 midspan bottom control points makes it the same as the deck...
+		else if(spline_size >= 6)
+		{
+			System.out.println("-------------------------");
+			System.out.println("Channel Interp - Num of Additional Bottom Points = " + (spline_size - 5));
+			System.out.println("-------------------------");
+
+			deck=new NurbsSurface(segments,23);
+			for(int i=0;i<segments;i++)
+				for(int j=0;j<23;j++)
+					deck.set_control_point(i,j,new NurbsPoint(0,0,0));
+			
+			bottom=new NurbsSurface(segments,(spline_size-3)*6-1); //was 23 for ss = 7 
+			for(int i=0;i<segments;i++)
+				for(int j=0;j<(spline_size-3)*6-1;j++)
+					bottom.set_control_point(i,j,new NurbsPoint(0,0,0));
+		}
+		// PW Insert for Channel Correction 		
 		else
 		{
 			deck=new NurbsSurface(segments,17);
@@ -2978,11 +2997,20 @@ public class NurbsBoard extends AbstractBoard implements Cloneable
 				return -1;
 			
 			//**************tucked under
-
-			control_point=bezier_spline.getControlPoint(1);
-			control_point2=bezier_spline2.getControlPoint(1);
-			control_point3=bezier_spline3.getControlPoint(1);
-
+			// PW Insert for Channel Correction - Assumes all additional points are on bottom, no good for deck grooves etc...
+			if (spline_size > 5)
+			{
+				control_point=bezier_spline.getControlPoint(spline_size - 4);
+				control_point2=bezier_spline2.getControlPoint(spline_size - 4);
+				control_point3=bezier_spline3.getControlPoint(spline_size - 4);
+			}
+			// PW Insert for Channel Correction 
+			else
+			{
+				control_point=bezier_spline.getControlPoint(1);
+				control_point2=bezier_spline2.getControlPoint(1);
+				control_point3=bezier_spline3.getControlPoint(1);
+			}
 			//center point
 
 			p2d=control_point.getEndPoint();
@@ -3036,11 +3064,20 @@ public class NurbsBoard extends AbstractBoard implements Cloneable
 			deck_points[i-1][deck.get_nr_of_points()-4]=new NurbsPoint(deck_points[i-1][3].x,deck_points[i-1][3].y,-deck_points[i-1][3].z);
 			
 			//***********************rail
-
-			control_point=bezier_spline.getControlPoint(2);
-			control_point2=bezier_spline2.getControlPoint(2);
-			control_point3=bezier_spline3.getControlPoint(2);
-
+			// PW Insert for Channel Correction - Assumes all additional points are on bottom, no good for deck grooves etc...
+			if (spline_size > 5)
+			{
+				control_point=bezier_spline.getControlPoint(spline_size - 3);
+				control_point2=bezier_spline2.getControlPoint(spline_size - 3);
+				control_point3=bezier_spline3.getControlPoint(spline_size - 3);
+			}
+			// PW Insert for Channel Correction 
+			else
+			{
+				control_point=bezier_spline.getControlPoint(2);
+				control_point2=bezier_spline2.getControlPoint(2);
+				control_point3=bezier_spline3.getControlPoint(2);	
+			}
 			//center point
 
 			p2d=control_point.getEndPoint();
@@ -3114,16 +3151,25 @@ public class NurbsBoard extends AbstractBoard implements Cloneable
 //			deck_points[i-1][6]=new NurbsPoint(deck_points[i][6].x+deck_points[i-1][5].x-deck_points[i][5].x, deck_points[i][6].y+deck_points[i-1][5].y-deck_points[i][5].y, deck_points[i][6].z+deck_points[i-1][5].z-deck_points[i][5].z);
 			deck_points[i-1][deck.get_nr_of_points()-7]=new NurbsPoint(deck_points[i-1][6].x,deck_points[i-1][6].y,-deck_points[i-1][6].z);
 
-
-			if(spline_size==5)
+			// PW modified for Channels - Deck assumed un modified (ie same as 5 point option. >= was  ==
+			if(spline_size>=5)
 			{			
 				
 				//***************deck 1
-	
-				control_point=bezier_spline.getControlPoint(3);
-				control_point2=bezier_spline2.getControlPoint(3);
-				control_point3=bezier_spline3.getControlPoint(3);
-	
+				// PW Insert for Channel Correction 
+				if (spline_size > 5)
+				{
+					control_point=bezier_spline.getControlPoint(spline_size - 2);
+					control_point2=bezier_spline2.getControlPoint(spline_size - 2);
+					control_point3=bezier_spline3.getControlPoint(spline_size - 2);
+				}
+				// PW Insert for Channel Correction 
+				else
+				{
+					control_point=bezier_spline.getControlPoint(3);
+					control_point2=bezier_spline2.getControlPoint(3);
+					control_point3=bezier_spline3.getControlPoint(3);
+				}
 				//center point
 	
 				p2d=control_point.getEndPoint();
@@ -3199,11 +3245,20 @@ public class NurbsBoard extends AbstractBoard implements Cloneable
 	
 	
 				//***************deck top
-	
-				control_point=bezier_spline.getControlPoint(4);
-				control_point2=bezier_spline2.getControlPoint(4);
-				control_point3=bezier_spline3.getControlPoint(4);
-				
+				// PW Insert for Channel Correction 
+				if (spline_size > 5)
+				{
+					control_point=bezier_spline.getControlPoint(spline_size - 1);
+					control_point2=bezier_spline2.getControlPoint(spline_size - 1);
+					control_point3=bezier_spline3.getControlPoint(spline_size - 1);
+				}
+				// PW Insert for Channel Correction 
+				else
+				{
+					control_point=bezier_spline.getControlPoint(4);
+					control_point2=bezier_spline2.getControlPoint(4);
+					control_point3=bezier_spline3.getControlPoint(4);
+				}
 				//center point
 	
 				p2d=control_point.getEndPoint();
@@ -3343,10 +3398,20 @@ public class NurbsBoard extends AbstractBoard implements Cloneable
 			bezier_spline3=cross_section3.getBezierSpline();
 			
 			//*************************tucked under
-
-			control_point=bezier_spline.getControlPoint(1);
-			control_point2=bezier_spline2.getControlPoint(1);
-			control_point3=bezier_spline3.getControlPoint(1);
+						// PW Insert for Channel Correction - Assumes all additional points are on bottom, no good for deck grooves etc...
+			if (spline_size > 5)
+			{
+				control_point=bezier_spline.getControlPoint(spline_size - 4);
+				control_point2=bezier_spline2.getControlPoint(spline_size - 4);
+				control_point3=bezier_spline3.getControlPoint(spline_size - 4);
+			}
+			// PW Insert for Channel Correction 
+			else
+			{
+				control_point=bezier_spline.getControlPoint(1);
+				control_point2=bezier_spline2.getControlPoint(1);
+				control_point3=bezier_spline3.getControlPoint(1);
+			}
 
 			//center point
 			System.out.println("setting bottom rail point");
@@ -3398,6 +3463,93 @@ public class NurbsBoard extends AbstractBoard implements Cloneable
 //			bottom_points[i-1][3]=new NurbsPoint(bottom_points[i][3].x+bottom_points[i-1][2].x-bottom_points[i][2].x, bottom_points[i][3].y+bottom_points[i-1][2].y-bottom_points[i][2].y, bottom_points[i][3].z+bottom_points[i-1][2].z-bottom_points[i][2].z);
 			bottom_points[i-1][bottom.get_nr_of_points()-4]=new NurbsPoint(bottom_points[i-1][3].x,bottom_points[i-1][3].y,-bottom_points[i-1][3].z);
 
+			//PW - need to do something in here for all internal control points?
+			if (spline_size > 5)
+			{
+				for(int k = 0;k < (spline_size - 5);k++) 
+				// for each intermediate control point - generate Nurbs Pt - should reference Board Property - num bottom points
+				{
+					control_point=bezier_spline.getControlPoint(spline_size - 5 - k);
+					control_point2=bezier_spline2.getControlPoint(spline_size - 5 - k);
+					control_point3=bezier_spline3.getControlPoint(spline_size - 5 - k);
+				
+					p2d=control_point.getEndPoint();
+					p2d.setLocation(p2d.getX(),p2d.getY()+bezier_board.getRockerAtPos(xval));
+					bottom_points[i][2+((k+1)*3)]=new NurbsPoint(10*xval, 10*p2d.getY(), -10*p2d.getX());
+					bottom_points[i][bottom.get_nr_of_points()-(3+((k+1)*3))]=new NurbsPoint(10*xval, 10*p2d.getY(), 10*p2d.getX());
+					
+					dist=distfwd;
+					p2d2=control_point2.getEndPoint();
+					p2d2.setLocation(p2d2.getX(),p2d2.getY()+bezier_board.getRockerAtPos(xval+0.1));
+					dist2=Math.sqrt(0.1*0.1+(p2d2.getY()-p2d.getY())*(p2d2.getY()-p2d.getY())+(p2d2.getX()-p2d.getX())*(p2d2.getX()-p2d.getX()));
+					tangent1=new NurbsPoint(0.1/dist2, (p2d2.getY()-p2d.getY())/dist2, (p2d2.getX()-p2d.getX())/dist2);
+					bottom_points[i+1][2+((k+1)*3)]=new NurbsPoint(10*(xval+tangent1.x*dist), 10*(p2d.getY()+tangent1.y*dist), -10*(p2d.getX()+tangent1.z*dist));
+					bottom_points[i+1][bottom.get_nr_of_points()-(3+((k+1)*3))]=new NurbsPoint(10*(xval+tangent1.x*dist), 10*(p2d.getY()+tangent1.y*dist), 10*(p2d.getX()+tangent1.z*dist));
+								
+					dist=distbwd;
+					p2d3=control_point3.getEndPoint();
+					p2d3.setLocation(p2d3.getX(),p2d3.getY()+bezier_board.getRockerAtPos(xval-0.1));
+					dist2=Math.sqrt(0.1*0.1+(p2d3.getY()-p2d.getY())*(p2d3.getY()-p2d.getY())+(p2d3.getX()-p2d.getX())*(p2d3.getX()-p2d.getX()));
+					tangent2=new NurbsPoint(0.1/dist2, (p2d3.getY()-p2d.getY())/dist2, (p2d3.getX()-p2d.getX())/dist2);
+					bottom_points[i-1][2+((k+1)*3)]=new NurbsPoint(10*(xval-tangent2.x*dist), 10*(p2d.getY()+tangent2.y*dist), -10*(p2d.getX()+tangent2.z*dist));
+					bottom_points[i-1][bottom.get_nr_of_points()-(3+((k+1)*3))]=new NurbsPoint(10*(xval-tangent2.x*dist), 10*(p2d.getY()+tangent2.y*dist), 10*(p2d.getX()+tangent2.z*dist));
+
+					//tangent to prev
+
+					p2d=control_point.getTangentToNext();
+					p2d.setLocation(p2d.getX(),p2d.getY()+bezier_board.getRockerAtPos(xval));
+					bottom_points[i][1+((k+1)*3)]=new NurbsPoint(10*xval, 10*p2d.getY(), -10*p2d.getX());
+					bottom_points[i][bottom.get_nr_of_points()-(2+((k+1)*3))]=new NurbsPoint(10*xval, 10*p2d.getY(), 10*p2d.getX());
+
+					dist=distfwd;
+					p2d2=control_point2.getTangentToNext();
+					p2d2.setLocation(p2d2.getX(),p2d2.getY()+bezier_board.getRockerAtPos(xval+0.1));
+					dist2=Math.sqrt(0.1*0.1+(p2d2.getY()-p2d.getY())*(p2d2.getY()-p2d.getY())+(p2d2.getX()-p2d.getX())*(p2d2.getX()-p2d.getX()));
+					tangent1=new NurbsPoint(0.1/dist2, (p2d2.getY()-p2d.getY())/dist2, (p2d2.getX()-p2d.getX())/dist2);
+					bottom_points[i+1][1+((k+1)*3)]=new NurbsPoint(10*(xval+tangent1.x*dist), 10*(p2d.getY()+tangent1.y*dist), -10*(p2d.getX()+tangent1.z*dist));
+		//			bottom_points[i+1][4]=new NurbsPoint(bottom_points[i][4].x+bottom_points[i+1][5].x-bottom_points[i][5].x, bottom_points[i][4].y+bottom_points[i+1][5].y-bottom_points[i][5].y, bottom_points[i][4].z+bottom_points[i+1][5].z-bottom_points[i][5].z);
+					bottom_points[i+1][bottom.get_nr_of_points()-(2+((k+1)*3))]=new NurbsPoint(bottom_points[i+1][1+((k+1)*3)].x,bottom_points[i+1][1+((k+1)*3)].y,-bottom_points[i+1][1+((k+1)*3)].z);
+
+					dist=distbwd;
+					p2d3=control_point3.getTangentToNext();
+					p2d3.setLocation(p2d3.getX(),p2d3.getY()+bezier_board.getRockerAtPos(xval-0.1));
+					dist2=Math.sqrt(0.1*0.1+(p2d3.getY()-p2d.getY())*(p2d3.getY()-p2d.getY())+(p2d3.getX()-p2d.getX())*(p2d3.getX()-p2d.getX()));
+					tangent2=new NurbsPoint(0.1/dist2, (p2d3.getY()-p2d.getY())/dist2, (p2d3.getX()-p2d.getX())/dist2);
+					bottom_points[i-1][1+((k+1)*3)]=new NurbsPoint(10*(xval-tangent2.x*dist), 10*(p2d.getY()+tangent2.y*dist), -10*(p2d.getX()+tangent2.z*dist));
+		//			bottom_points[i-1][4]=new NurbsPoint(bottom_points[i][4].x+bottom_points[i-1][5].x-bottom_points[i][5].x, bottom_points[i][4].y+bottom_points[i-1][5].y-bottom_points[i][5].y, bottom_points[i][4].z+bottom_points[i-1][5].z-bottom_points[i][5].z);
+					bottom_points[i-1][bottom.get_nr_of_points()-(2+((k+1)*3))]=new NurbsPoint(bottom_points[i-1][1+((k+1)*3)].x,bottom_points[i-1][1+((k+1)*3)].y,-bottom_points[i-1][1+((k+1)*3)].z);
+
+					//tangent to next
+
+					p2d=control_point.getTangentToPrev();
+					p2d.setLocation(p2d.getX(),p2d.getY()+bezier_board.getRockerAtPos(xval));
+					bottom_points[i][3+((k+1)*3)]=new NurbsPoint(10*xval, 10*p2d.getY(), -10*p2d.getX());
+					bottom_points[i][bottom.get_nr_of_points()-(4+((k+1)*3))]=new NurbsPoint(10*xval, 10*p2d.getY(), 10*p2d.getX());
+
+					dist=distfwd;
+					p2d2=control_point2.getTangentToPrev();
+					p2d2.setLocation(p2d2.getX(),p2d2.getY()+bezier_board.getRockerAtPos(xval+0.1));
+					dist2=Math.sqrt(0.1*0.1+(p2d2.getY()-p2d.getY())*(p2d2.getY()-p2d.getY())+(p2d2.getX()-p2d.getX())*(p2d2.getX()-p2d.getX()));
+					tangent1=new NurbsPoint(0.1/dist2, (p2d2.getY()-p2d.getY())/dist2, (p2d2.getX()-p2d.getX())/dist2);
+					bottom_points[i+1][3+((k+1)*3)]=new NurbsPoint(10*(xval+tangent1.x*dist), 10*(p2d.getY()+tangent1.y*dist), -10*(p2d.getX()+tangent1.z*dist));
+		//			bottom_points[i+1][6]=new NurbsPoint(bottom_points[i][6].x+bottom_points[i+1][5].x-bottom_points[i][5].x, bottom_points[i][6].y+bottom_points[i+1][5].y-bottom_points[i][5].y, bottom_points[i][6].z+bottom_points[i+1][5].z-bottom_points[i][5].z);
+					bottom_points[i+1][bottom.get_nr_of_points()-(4+((k+1)*3))]=new NurbsPoint(bottom_points[i+1][3+((k+1)*3)].x,bottom_points[i+1][3+((k+1)*3)].y,-bottom_points[i+1][3+((k+1)*3)].z);
+
+					dist=distbwd;
+					p2d3=control_point3.getTangentToPrev();
+					p2d3.setLocation(p2d3.getX(),p2d3.getY()+bezier_board.getRockerAtPos(xval-0.1));
+					dist2=Math.sqrt(0.1*0.1+(p2d3.getY()-p2d.getY())*(p2d3.getY()-p2d.getY())+(p2d3.getX()-p2d.getX())*(p2d3.getX()-p2d.getX()));
+					tangent2=new NurbsPoint(0.1/dist2, (p2d3.getY()-p2d.getY())/dist2, (p2d3.getX()-p2d.getX())/dist2);
+					bottom_points[i-1][3+((k+1)*3)]=new NurbsPoint(10*(xval-tangent2.x*dist), 10*(p2d.getY()+tangent2.y*dist), -10*(p2d.getX()+tangent2.z*dist));
+		//			bottom_points[i-1][6]=new NurbsPoint(bottom_points[i][6].x+bottom_points[i-1][5].x-bottom_points[i][5].x, bottom_points[i][6].y+bottom_points[i-1][5].y-bottom_points[i][5].y, bottom_points[i][6].z+bottom_points[i-1][5].z-bottom_points[i][5].z);
+					bottom_points[i-1][bottom.get_nr_of_points()-(4+((k+1)*3))]=new NurbsPoint(bottom_points[i-1][3+((k+1)*3)].x,bottom_points[i-1][3+((k+1)*3)].y,-bottom_points[i-1][3+((k+1)*3)].z);
+//_______________________________________________________________________________
+				
+				}
+			}
+			// PW Insert for Channel Correction 
+
+
 			//bottom center
 
 			//*************** bottom
@@ -3411,53 +3563,55 @@ public class NurbsBoard extends AbstractBoard implements Cloneable
 
 			p2d=control_point.getEndPoint();
 			p2d.setLocation(p2d.getX(),p2d.getY()+bezier_board.getRockerAtPos(xval));
-			bottom_points[i][5]=new NurbsPoint(10*xval, 10*p2d.getY(), -10*p2d.getX());
+			bottom_points[i][(bottom.get_nr_of_points()-1)/2]=new NurbsPoint(10*xval, 10*p2d.getY(), -10*p2d.getX());
 
 			dist=distfwd;
 			p2d2=control_point2.getEndPoint();
 			p2d2.setLocation(p2d2.getX(),p2d2.getY()+bezier_board.getRockerAtPos(xval+0.1));
 			dist2=Math.sqrt(0.1*0.1+(p2d2.getY()-p2d.getY())*(p2d2.getY()-p2d.getY())+(p2d2.getX()-p2d.getX())*(p2d2.getX()-p2d.getX()));
 			tangent1=new NurbsPoint(0.1/dist2, (p2d2.getY()-p2d.getY())/dist2, (p2d2.getX()-p2d.getX())/dist2);
-			bottom_points[i+1][5]=new NurbsPoint(10*(xval+tangent1.x*dist), 10*(p2d.getY()+tangent1.y*dist), -10*(p2d.getX()+tangent1.z*dist));
+			bottom_points[i+1][(bottom.get_nr_of_points()-1)/2]=new NurbsPoint(10*(xval+tangent1.x*dist), 10*(p2d.getY()+tangent1.y*dist), -10*(p2d.getX()+tangent1.z*dist));
 						
 			dist=distbwd;
 			p2d3=control_point3.getEndPoint();
 			p2d3.setLocation(p2d3.getX(),p2d3.getY()+bezier_board.getRockerAtPos(xval-0.1));
 			dist2=Math.sqrt(0.1*0.1+(p2d3.getY()-p2d.getY())*(p2d3.getY()-p2d.getY())+(p2d3.getX()-p2d.getX())*(p2d3.getX()-p2d.getX()));
 			tangent2=new NurbsPoint(0.1/dist2, (p2d3.getY()-p2d.getY())/dist2, (p2d3.getX()-p2d.getX())/dist2);
-			bottom_points[i-1][5]=new NurbsPoint(10*(xval-tangent2.x*dist), 10*(p2d.getY()+tangent2.y*dist), -10*(p2d.getX()+tangent2.z*dist));
+			bottom_points[i-1][(bottom.get_nr_of_points()-1)/2]=new NurbsPoint(10*(xval-tangent2.x*dist), 10*(p2d.getY()+tangent2.y*dist), -10*(p2d.getX()+tangent2.z*dist));
 
 			//tangent to next
 			System.out.println("setting bottom tangent to next");
 
 			p2d=control_point.getTangentToNext();
 			p2d.setLocation(p2d.getX(),p2d.getY()+bezier_board.getRockerAtPos(xval));
-			bottom_points[i][4]=new NurbsPoint(10*xval, 10*p2d.getY(), -10*p2d.getX());
-			bottom_points[i][bottom.get_nr_of_points()-5]=new NurbsPoint(10*xval, 10*p2d.getY(), 10*p2d.getX());
+			bottom_points[i][(bottom.get_nr_of_points()-1)/2-1]=new NurbsPoint(10*xval, 10*p2d.getY(), -10*p2d.getX());
+			bottom_points[i][(bottom.get_nr_of_points()-1)/2+1]=new NurbsPoint(10*xval, 10*p2d.getY(), 10*p2d.getX());
 
 			dist=distfwd;
 			p2d2=control_point2.getTangentToNext();
 			p2d2.setLocation(p2d2.getX(),p2d2.getY()+bezier_board.getRockerAtPos(xval+0.1));
 			dist2=Math.sqrt(0.1*0.1+(p2d2.getY()-p2d.getY())*(p2d2.getY()-p2d.getY())+(p2d2.getX()-p2d.getX())*(p2d2.getX()-p2d.getX()));
 			tangent1=new NurbsPoint(0.1/dist2, (p2d2.getY()-p2d.getY())/dist2, (p2d2.getX()-p2d.getX())/dist2);
-			bottom_points[i+1][4]=new NurbsPoint(10*(xval+tangent1.x*dist), 10*(p2d.getY()+tangent1.y*dist), -10*(p2d.getX()+tangent1.z*dist));
+			bottom_points[i+1][(bottom.get_nr_of_points()-1)/2-1]=new NurbsPoint(10*(xval+tangent1.x*dist), 10*(p2d.getY()+tangent1.y*dist), -10*(p2d.getX()+tangent1.z*dist));
 //			bottom_points[i+1][4]=new NurbsPoint(bottom_points[i][4].x+bottom_points[i+1][5].x-bottom_points[i][5].x, bottom_points[i][4].y+bottom_points[i+1][5].y-bottom_points[i][5].y, bottom_points[i][4].z+bottom_points[i+1][5].z-bottom_points[i][5].z);
-			bottom_points[i+1][bottom.get_nr_of_points()-5]=new NurbsPoint(bottom_points[i+1][4].x,bottom_points[i+1][4].y,-bottom_points[i+1][4].z);
+			bottom_points[i+1][(bottom.get_nr_of_points()-1)/2+1]=new NurbsPoint(bottom_points[i+1][(bottom.get_nr_of_points()-1)/2-1].x,bottom_points[i+1][(bottom.get_nr_of_points()-1)/2-1].y,-bottom_points[i+1][(bottom.get_nr_of_points()-1)/2-1].z);
 
 			dist=distbwd;
 			p2d3=control_point3.getTangentToNext();
 			p2d3.setLocation(p2d3.getX(),p2d3.getY()+bezier_board.getRockerAtPos(xval-0.1));
 			dist2=Math.sqrt(0.1*0.1+(p2d3.getY()-p2d.getY())*(p2d3.getY()-p2d.getY())+(p2d3.getX()-p2d.getX())*(p2d3.getX()-p2d.getX()));
 			tangent2=new NurbsPoint(0.1/dist2, (p2d3.getY()-p2d.getY())/dist2, (p2d3.getX()-p2d.getX())/dist2);
-			bottom_points[i-1][4]=new NurbsPoint(10*(xval-tangent2.x*dist), 10*(p2d.getY()+tangent2.y*dist), -10*(p2d.getX()+tangent2.z*dist));
+			bottom_points[i-1][(bottom.get_nr_of_points()-1)/2-1]=new NurbsPoint(10*(xval-tangent2.x*dist), 10*(p2d.getY()+tangent2.y*dist), -10*(p2d.getX()+tangent2.z*dist));
 //			bottom_points[i-1][4]=new NurbsPoint(bottom_points[i][4].x+bottom_points[i-1][5].x-bottom_points[i][5].x, bottom_points[i][4].y+bottom_points[i-1][5].y-bottom_points[i][5].y, bottom_points[i][4].z+bottom_points[i-1][5].z-bottom_points[i][5].z);
-			bottom_points[i-1][bottom.get_nr_of_points()-5]=new NurbsPoint(bottom_points[i-1][4].x,bottom_points[i-1][4].y,-bottom_points[i-1][4].z);
-
+			//System.out.println("mirror tangent: " + ((bottom.get_nr_of_points()-1)/2+1));
+			
+			bottom_points[i-1][(bottom.get_nr_of_points()-1)/2+1]=new NurbsPoint(bottom_points[i-1][(bottom.get_nr_of_points()-1)/2-1].x,bottom_points[i-1][(bottom.get_nr_of_points()-1)/2-1].y,-bottom_points[i-1][(bottom.get_nr_of_points()-1)/2-1].z);
+			
 
 
 		}
 
-		//System.out.println("Setting control points");
+		//System.out.println("Setting control points - deck");
 
 		//create surfaces
 		
@@ -3469,11 +3623,15 @@ public class NurbsBoard extends AbstractBoard implements Cloneable
 			}
 		}
 		
+		//System.out.println("Setting control points - bottom: seg num total = " + bottom.get_nr_of_segments() + " point num total = " + bottom.get_nr_of_points());
 
+		
 		for(int i=2;i<bottom.get_nr_of_segments()-2;i++)
 		{
 			for(int j=2;j<bottom.get_nr_of_points()-2;j++)
 			{
+				//System.out.println("seg num = " + i + " point num = " + j);
+				//System.out.println(bottom_points[i][j]);
 				bottom.set_control_point(i,j,bottom_points[i][j]);
 			}
 		}
