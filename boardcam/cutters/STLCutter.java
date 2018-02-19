@@ -338,6 +338,189 @@ public class STLCutter extends AbstractCutter
 
 	}
 	
+	public double[] calcOffset_WS(Point3d pos, Vector3d normal, AbstractBoard board)
+	{	
+		// find the cutting point with normal pointing against the board normal
+		// if ambiguous choose cutting point closest to tool tip (0,0,0)
+		// 2016-03-04
+		// Updated for WaveShapes MachineConfig
+		// If lateral angle is less than 30 deg, then tool is offset upwards, 
+		// otherwise normal behaviour applies
+		
+		double min_normal=1000;
+		double min_distance=1000;
+		double norm;
+		double dist = 0;
+		int selected_point=-1;
+		
+		double max_lat_ang;   //10/180*3.14159; // 30 degrees in radians
+		double max_neg_distance = 0; // maximum normal interference of tool
+		
+		// calculate lateral angle
+		//System.out.println(normal.x + ", " + normal.y + ", " + normal.z);
+		//System.out.println("max_lat_ang = " + max_lat_ang);
+		//System.out.println("TAN max_lat_ang x Y = " + Math.abs(normal.y));
+		if ((Math.abs(normal.x) >= 100.577*Math.abs(normal.z)) 
+			|| (Math.abs(normal.y) >= 100.577*Math.abs(normal.z)))
+		{
+			for(int i=0;i<n-1;i++)
+			{
+				norm=Math.sqrt( (normal.x+transformed_cutting_normal[i].x)*(normal.x+transformed_cutting_normal[i].x)+
+						(normal.y+transformed_cutting_normal[i].y)*(normal.y+transformed_cutting_normal[i].y)+
+						(normal.z+transformed_cutting_normal[i].z)*(normal.z+transformed_cutting_normal[i].z));
+				
+				dist=Math.sqrt( transformed_cutting_point[i].x*transformed_cutting_point[i].x +
+						transformed_cutting_point[i].y*transformed_cutting_point[i].y +
+						transformed_cutting_point[i].z*transformed_cutting_point[i].z);
+
+				if(norm<min_normal || (norm==min_normal && dist<min_distance) )
+				{
+					min_normal=norm;
+					min_distance=dist;
+					selected_point=i;
+				}
+			}
+			
+			Point3d offsetPoint = new Point3d(pos);
+			//TODO: Add feature for mould milling? IE, sub or add...
+	//		offsetPoint.add(transformed_cutting_point[selected_point]);		
+			offsetPoint.sub(transformed_cutting_point[selected_point]);		
+			
+			double[] ret = new double[]{offsetPoint.x, offsetPoint.y, offsetPoint.z};
+			return ret;	
+		}
+		else // lateral does not exceed limit - offset tool upwards only
+		{
+			//System.out.println("Just Checking In Here");
+			for(int i=0;i<n-1;i++) // each point on tool mesh
+			{
+				//normal distance
+				//dist = ((normal.x*transformed_cutting_point[i].x 
+				//	+ normal.y*transformed_cutting_point[i].y 
+				//	+ normal.z*transformed_cutting_point[i].z)
+				//	/Math.sqrt(normal.x*normal.x + normal.y*normal.y + normal.z*normal.z));
+				
+				//vertical distance
+				dist = ((normal.x*transformed_cutting_point[i].x 
+					+ normal.y*transformed_cutting_point[i].y) / (-normal.z))
+					- transformed_cutting_point[i].z;
+				
+				if (dist > max_neg_distance)
+				{
+					max_neg_distance = dist;
+				}
+			}
+			//System.out.println("Dist = " + max_neg_distance);
+			//double[] ret = new double[]{pos.x, pos.y , pos.z + (Math.abs(normal.z)/normal.z)*max_neg_distance};
+			double[] ret = new double[]{pos.x, pos.y , pos.z + max_neg_distance};
+			
+			//double[] ret = new double[]{pos.x, pos.y , pos.z 
+			//	+ max_neg_distance};
+			return ret;	
+		}
+	}
+
+public double[] calcOffset_WS_bottom(Point3d pos, Vector3d normal, AbstractBoard board)
+	{	
+		// find the cutting point with normal pointing against the board normal
+		// if ambiguous choose cutting point closest to tool tip (0,0,0)
+		// 2016-03-04
+		// Updated for WaveShapes MachineConfig
+		// If lateral angle is less than 30 deg, then tool is offset upwards, 
+		// otherwise normal behaviour applies
+		
+		double min_normal=1000;
+		double min_distance=1000;
+		double norm;
+		double dist = 0;
+		int selected_point=-1;
+		
+		double max_lat_ang;   //10/180*3.14159; // 30 degrees in radians
+		double max_neg_distance = 0; // maximum normal interference of tool
+		
+		// calculate lateral angle
+		//System.out.println(normal.x + ", " + normal.y + ", " + normal.z);
+		//System.out.println("max_lat_ang = " + max_lat_ang);
+		//System.out.println("TAN max_lat_ang x Y = " + Math.abs(normal.y));
+		if ((Math.abs(normal.x) >= 100.577*Math.abs(normal.z)) 
+			|| (Math.abs(normal.y) >= 100.577*Math.abs(normal.z)))
+		{
+			for(int i=0;i<n-1;i++)
+			{
+				norm=Math.sqrt( (normal.x+transformed_cutting_normal[i].x)*(normal.x+transformed_cutting_normal[i].x)+
+						(normal.y+transformed_cutting_normal[i].y)*(normal.y+transformed_cutting_normal[i].y)+
+						(normal.z+transformed_cutting_normal[i].z)*(normal.z+transformed_cutting_normal[i].z));
+				
+				dist=Math.sqrt( transformed_cutting_point[i].x*transformed_cutting_point[i].x +
+						transformed_cutting_point[i].y*transformed_cutting_point[i].y +
+						transformed_cutting_point[i].z*transformed_cutting_point[i].z);
+
+				if(norm<min_normal || (norm==min_normal && dist<min_distance) )
+				{
+					min_normal=norm;
+					min_distance=dist;
+					selected_point=i;
+				}
+			}
+			
+			Point3d offsetPoint = new Point3d(pos);
+			//TODO: Add feature for mould milling? IE, sub or add...
+	//		offsetPoint.add(transformed_cutting_point[selected_point]);		
+			offsetPoint.sub(transformed_cutting_point[selected_point]);		
+			
+			double[] ret = new double[]{offsetPoint.x, offsetPoint.y, offsetPoint.z};
+			return ret;	
+		}
+		else // lateral does not exceed limit - offset tool upwards only
+		{
+			//System.out.println("Just Checking In Here");
+			for(int i=0;i<n-1;i++) // each point on tool mesh
+			{
+				//normal distance
+				//dist = ((normal.x*transformed_cutting_point[i].x 
+				//	+ normal.y*transformed_cutting_point[i].y 
+				//	+ normal.z*transformed_cutting_point[i].z)
+				//	/Math.sqrt(normal.x*normal.x + normal.y*normal.y + normal.z*normal.z));
+				
+				//vertical distance
+				dist = ((normal.x*transformed_cutting_point[i].x 
+					+ normal.y*transformed_cutting_point[i].y) / (-normal.z))
+					- transformed_cutting_point[i].z;
+				
+				if (dist < max_neg_distance)
+				{
+					max_neg_distance = dist;
+				}
+			}
+			//System.out.println("Dist = " + max_neg_distance);
+			//double[] ret = new double[]{pos.x, pos.y , pos.z + (Math.abs(normal.z)/normal.z)*max_neg_distance};
+			double[] ret = new double[]{pos.x, pos.y , pos.z + max_neg_distance};
+			
+			//double[] ret = new double[]{pos.x, pos.y , pos.z 
+			//	+ max_neg_distance};
+			return ret;	
+		}
+	}
+	
+	public NurbsPoint calcOffset_WS(NurbsPoint p1, NurbsPoint mynormal)
+	{	
+//		Vector3d mynormal2=new Vector3d(mynormal.x, mynormal.y, mynormal.z);
+		Vector3d mynormal2=new Vector3d(mynormal.x, mynormal.z, mynormal.y);
+		double[] res=new double[3];
+		res=calcOffset_WS(new Point3d(p1.x, p1.z, p1.y), mynormal2, null);
+								
+		return new NurbsPoint(res[0],res[2],res[1]);
+	}
+	
+	public NurbsPoint calcOffset_WS_bottom(NurbsPoint p1, NurbsPoint mynormal)
+	{	
+//		Vector3d mynormal2=new Vector3d(mynormal.x, mynormal.y, mynormal.z);
+		Vector3d mynormal2=new Vector3d(mynormal.x, mynormal.z, mynormal.y);
+		double[] res=new double[3];
+		res=calcOffset_WS_bottom(new Point3d(p1.x, p1.z, p1.y), mynormal2, null);
+								
+		return new NurbsPoint(res[0],res[2],res[1]);
+	}
 	
 	public NurbsPoint calcOffset(NurbsPoint p1, NurbsPoint mynormal)
 	{	
@@ -348,7 +531,6 @@ public class STLCutter extends AbstractCutter
 								
 		return new NurbsPoint(res[0],res[2],res[1]);
 	}
-	
 	public void setRotationAngle(double angle)
 	{
 	}
@@ -422,6 +604,7 @@ public class STLCutter extends AbstractCutter
 	{
 		Intersect intersect=new Intersect();
 		PickSegment segment;
+		
 		Point3d start, end;
 //		Point3d[] triangle=new Point3d[3];
 		int index=0;
@@ -437,8 +620,11 @@ public class STLCutter extends AbstractCutter
 		end_i=(int)((cutterpos.i+2)/step);
 		start_j=(int)((cutterpos.j-1)/step);
 		end_j=(int)((cutterpos.j+2)/step);
-			
-//		System.out.println("n=" + n);		
+		
+		System.out.println("step=" + step);
+		System.out.println("cutterpos.i=" + cutterpos.i);
+		System.out.println("cutterpos.j=" + cutterpos.j);
+		System.out.println("n=" + n);		
 		for(int k=0;k<cn-2;k=k+2)
 		{
 			//create line segment from tool
@@ -465,21 +651,25 @@ public class STLCutter extends AbstractCutter
 	
 			//check intersection with each surface triangle
 				
-//			System.out.println("checking for collision");
+			System.out.println("checking for collision");
 
 
 			for(int i=start_i;i<end_i;i++)
 			{
 				for(int j=start_j;j<end_j;j++)
 				{
+					System.out.println("checking 1");
 					if(intersect.segmentAndTriangle(segment,triangle[i][j][0],index,dist))
 						collision=true;
-
+					System.out.println("checking 2");
 					if(intersect.segmentAndTriangle(segment,triangle[i][j][1],index,dist))
 						collision=true;
 				}
 			}		
-/*			
+
+			System.out.println("checked for collision");
+			
+			/*			
 			for(int i=3; i<srf.get_nr_of_segments()-5; i++)
 			{
 				for(double u=0.0; u<1.0; u=u+step)
@@ -522,7 +712,7 @@ public class STLCutter extends AbstractCutter
 		
 		}
 
-
+		System.err.println("INHERE 3");	
 		if(collision)
 		{
 			System.out.println("collision detected at i=" + cutterpos.i + " j=" + cutterpos.j);
