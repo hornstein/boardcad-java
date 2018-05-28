@@ -1,7 +1,11 @@
 package board.readers;
 
 import java.awt.geom.Point2D;
-import java.io.File;
+//import java.io.*;//File.*;
+import java.nio.file.*;//File.*;
+import java.nio.charset.*;
+import java.io.StringReader;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -12,7 +16,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
+import org.xml.sax.*;
+//import org.xml.sax.SAXException;
 
 import board.BezierBoard;
 
@@ -33,16 +38,27 @@ public class S3dReader {
 	static public int loadFile(BezierBoard brd, String aFilename)
 	{
 		System.out.printf("Loading %s\n", aFilename);
-
+		
 		int ret = 0;
 		
 		brd.reset();
 		
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		
-		try {		
+		try {
+			// rectify bad XML in v8 s3d file (PW - 12/04/2018)
+			// this does not modify the file, rather changes the problematic issues as read by BC.
+			Path path = Paths.get(aFilename);
+			Charset charset = StandardCharsets.UTF_8;
+		
+			String s3Dcontent = new String(Files.readAllBytes(path));//, charset);
+			s3Dcontent = s3Dcontent.replaceAll("Ref. point", "RefPoint");
+		
+			// finish rectifying bad XML
+			
 			DocumentBuilder builder = factory.newDocumentBuilder();
-			Document document = builder.parse( new File(aFilename) );
+			//Document document = builder.parse( new File(aFilename) );
+			Document document = builder.parse( new InputSource(new StringReader(s3Dcontent)) );
 			
 			Element shape3Dnode = (Element)document.getElementsByTagName("Shape3d_design").item(0);
 			Element boardNode = (Element)shape3Dnode.getElementsByTagName("Board").item(0);

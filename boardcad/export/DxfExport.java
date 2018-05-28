@@ -11,7 +11,7 @@ import java.io.PrintStream;
 public class DxfExport {
 	
 	static final long serialVersionUID=1L;
-	static public final double SCALE_DXF_TO_SI = 0.01;
+	static public final double SCALE_DXF_TO_SI = 10; //was metres (0.01), output to mm.
 
 	static int q = 100;
 

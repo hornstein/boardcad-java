@@ -129,6 +129,10 @@ public class BezierBoard extends AbstractBoard implements Cloneable {
 
 	private Shape3D m3DModel = null;
 	
+	private int nr_of_bottom_ctrl_pts = 0;           // number of additional bottom control points for beizer patch creation of channels
+	private boolean curved_channel_iterpolation = false; // interpolate channels relative to outline (TRUE) or linearly (FALSE)
+
+	
 	public BezierBoard()
 	{
 		reset();
@@ -243,6 +247,9 @@ public class BezierBoard extends AbstractBoard implements Cloneable {
 		mAux3 = new String();
 		
 		mCenterOfMass = 0;
+		nr_of_bottom_ctrl_pts = 0;           // number of additional bottom control points for beizer patch creation of channels
+		curved_channel_iterpolation = false; // interpolate channels relative to outline (TRUE) or linearly (FALSE)
+
 	}
 	
 	
@@ -1209,6 +1216,64 @@ public class BezierBoard extends AbstractBoard implements Cloneable {
 			i.scale(thickness, width);
 			
 			i.setPosition(x);
+			// Perform Concave Adjustment Here (if curved interpolation requested)
+			int NumberOfConcavePts = 0;
+
+			int lowXSInd = 0;
+			int highXSInd = 0;
+			double m_slope = 0;
+			double C_intercept = 0;
+
+			int j = 1;
+			if (!curved_channel_iterpolation){
+				NumberOfConcavePts=nr_of_bottom_ctrl_pts;
+			}
+			while (j <= NumberOfConcavePts)
+			{
+				//System.out.println("CC Pt "+j);
+				BezierSpline ConcavePtPathSpline = new BezierSpline();
+				Point2D.Double[] ConcavePtArray = new Point2D.Double[mCrossSections.size()-2];
+				//create array of points for temp bezier spline
+				//
+				//System.out.println("NumXsects "+ mCrossSections.size());
+				for(int k = 0; k < mCrossSections.size() - 2; k++)
+				{
+					ConcavePtArray[k] = new Point2D.Double();
+					ConcavePtArray[k].x = mCrossSections.get(k+1).getPosition();
+					ConcavePtArray[k].y = mCrossSections.get(k+1).getBezierSpline().getControlPoint(j).getPoints()[0].x;
+					//System.out.println(mCrossSections.get(k).getPosition()+", "+mCrossSections.get(k).getBezierSpline().getControlPoint(j).getPoints()[0].x);
+				}
+			
+			if (x <= ConcavePtArray[0].x) // cross section between tail and first cross section
+			{
+				lowXSInd = 0;
+				highXSInd = 1;
+			}
+			else if (x >= ConcavePtArray[mCrossSections.size() - 3].x) // cross section between nose and last cross section
+			{
+				lowXSInd = mCrossSections.size() - 4;
+				highXSInd = mCrossSections.size() - 3;	
+			}
+			else // cross section is within user defined cross sections
+			{
+				// determine which cross sections the interpolated point is between
+				int k = 0;
+				while (x > ConcavePtArray[k].x)
+				{
+					k++;
+				}
+				lowXSInd = k-1;
+				highXSInd = k;
+			}
+			m_slope = ((ConcavePtArray[highXSInd].y - ConcavePtArray[lowXSInd].y) / (ConcavePtArray[highXSInd].x - ConcavePtArray[lowXSInd].x));
+			C_intercept = ConcavePtArray[highXSInd].y - m_slope * ConcavePtArray[highXSInd].x;
+			if (x <= ConcavePtArray[mCrossSections.size() - 3].x)
+			{
+				i.getBezierSpline().getControlPoint(j).setControlPointLocation(m_slope*x+C_intercept, i.getBezierSpline().getControlPoint(j).getPoints()[0].y);
+			}
+			j++;
+			}
+			
 		}
 		
 		return i;
@@ -2702,5 +2767,25 @@ public class BezierBoard extends AbstractBoard implements Cloneable {
 		
 		return str;
 	}
-		
+	
+	//PW additions for channels
+	public void set_nr_of_bottom_ctrl_pts(int numPts)
+	{
+		nr_of_bottom_ctrl_pts = numPts;
+	}
+	
+	public int get_nr_of_bottom_ctrl_pts()
+	{
+		return nr_of_bottom_ctrl_pts;
+	}
+	
+	public void set_curved_channel_iterpolation(boolean curved_chan)
+	{
+		curved_channel_iterpolation = curved_chan;
+	}
+	
+	public boolean get_curved_channel_iterpolation()
+	{
+		return curved_channel_iterpolation;
+	}
 }
