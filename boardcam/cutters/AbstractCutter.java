@@ -7,7 +7,7 @@ import javax.vecmath.Vector3d;
 import board.AbstractBoard;
 import cadcore.AxisAlignedBoundingBox;
 
-public abstract class AbstractCutter 
+public abstract class AbstractCutter implements Cloneable
 {
 	protected boolean mStayAwayFromStringer = false;
 	protected double mStringerWidth = 0.3;
@@ -81,5 +81,10 @@ public abstract class AbstractCutter
 	{
 		return null;	//Breaks out when returning null
 	}
+	
+	public Object clone() throws CloneNotSupportedException{
+		return super.clone();
+	}
+
 }
 

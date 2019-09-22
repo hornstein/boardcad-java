@@ -13,9 +13,9 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
 import board.BezierBoard;
-
 import cadcore.BezierSpline;
 import cadcore.UnitUtils;
+import boardcad.commands.BrdScaleCommand;
 import boardcad.i18n.LanguageResource;
 
 public class BoardSpec extends JPanel {
@@ -526,6 +526,7 @@ public class BoardSpec extends JPanel {
 			mScaleButton.setText( LanguageResource.getString("SCALEBUTTON_STR"));
 			mScaleButton.setToolTipText(LanguageResource.getString("SCALEBUTTONTOOLTIP_STR"));
 			mScaleButton.addActionListener(new java.awt.event.ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					BrdScaleCommand scaleCmd = new BrdScaleCommand(BoardCAD.getInstance().getSelectedEdit());
 					scaleCmd.execute();
@@ -543,6 +544,7 @@ private JRadioButton getOverCurveRadioButton() {
 					mOverCurveRadioButton.setToolTipText(LanguageResource.getString("OVERCURVERADIOBUTTONTOOLTIP_STR"));
 					mOverCurveRadioButton.addActionListener(new java.awt.event.ActionListener() {
 						
+						@Override
 						public void actionPerformed(java.awt.event.ActionEvent e) {
 							mOverCurveRadioButton.setSelected(true);
 							setVisible(true);
@@ -560,6 +562,7 @@ private JRadioButton getOverCurveRadioButton() {
 						mStraightLineRadioButton.setToolTipText(LanguageResource.getString("STRAIGHTLINERADIOBUTTONTOOLTIP_STR"));
 						mStraightLineRadioButton.addActionListener(new java.awt.event.ActionListener() {
 							
+							@Override
 							public void actionPerformed(java.awt.event.ActionEvent e) {
 								mStraightLineRadioButton.setSelected(true);
 								setVisible(true);
@@ -580,6 +583,7 @@ private JRadioButton getOverCurveRadioButton() {
 		{
 			mTimer = new java.util.Timer();
 			mTimer.schedule(new TimerTask(){
+				@Override
 				public void run()
 				{
 					updateMeasurements();
@@ -598,6 +602,7 @@ private JRadioButton getOverCurveRadioButton() {
 
 		mIntegralTimer = new java.util.Timer();
 		mIntegralTimer.schedule(new TimerTask(){
+			@Override
 			public void run()
 			{
 				updateAreaAndVolume();

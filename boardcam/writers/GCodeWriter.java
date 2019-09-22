@@ -10,6 +10,7 @@ import boardcam.toolpathgenerators.ext.CoordinateScaling;
 public class GCodeWriter extends AbstractMachineWriter{	
 
 	private static String  mAxis = "XYZAF";
+	private double mLastSpeed = 0.0;
 	
 	public GCodeWriter()
 	{
@@ -32,6 +33,12 @@ public class GCodeWriter extends AbstractMachineWriter{
 
 	public void writeComment(PrintStream stream, String comment)
 	{
+		if(!comment.contains("\n"))
+		{
+			stream.printf("(%s)\n", comment);
+			return;
+		}
+		
 		String[] list = comment.split("\n");
 		
 		for(int i = 0; i < list.length; i++)
@@ -57,7 +64,20 @@ public class GCodeWriter extends AbstractMachineWriter{
 
 	public void writeSpeed(PrintStream stream, int speed)
 	{
-		stream.printf("F%d\n", speed); 
+		if(mLastSpeed != speed)
+		{
+			stream.printf("F%d\n", speed);
+			mLastSpeed = speed;
+		}
+	}
+
+	public void writeSpeed(PrintStream stream, double speed)
+	{
+		if(mLastSpeed != speed)
+		{
+			stream.printf("F%f\n", speed);
+			mLastSpeed = speed;
+		}
 	}
 
 	public void writeBeginGoTo(PrintStream stream)
@@ -72,6 +92,17 @@ public class GCodeWriter extends AbstractMachineWriter{
 
 	public void writeCoordinate(PrintStream stream, double x, double y, double z)
 	{
+//		System.out.printf("GCodeWriter.writeCoordinate X%4.4f Y%4.4f Z%4.4f\n", x, y, z);
+		
+		if(Double.isInfinite(x) || Double.isInfinite(y) || Double.isInfinite(z))
+		{
+			System.out.printf("GCodeWriter.writeCoordinate INFINITE VALUE X%4.4f Y%4.4f Z%4.4f\n", x, y, z);
+		}
+		if(Double.isNaN(x) || Double.isNaN(y) || Double.isNaN(z))
+		{
+			System.out.printf("GCodeWriter.writeCoordinate NAN VALUE X%4.4f Y%4.4f Z%4.4f\n", x, y, z);			
+		}
+
 		stream.printf("X%4.4f Y%4.4f Z%4.4f\n", x, y, z);
 	}
 

@@ -125,6 +125,7 @@ public class ScaleBoardInputDialog extends JDialog {
 			
 			mContentPane.add(myTabbedPane, BorderLayout.CENTER);
 			ChangeListener changeListener = new ChangeListener() {
+				@Override
 				public void stateChanged(ChangeEvent changeEvent) {
         				JTabbedPane sourceTabbedPane = (JTabbedPane) changeEvent.getSource();
 				        if(sourceTabbedPane.getSelectedIndex()==0)
@@ -177,6 +178,7 @@ public class ScaleBoardInputDialog extends JDialog {
 				OverCurveRadioButton.setBounds(new Rectangle(41, 68, 145, 20));
 				OverCurveRadioButton.setText(LanguageResource.getString("OVERCURVERADIOBUTTON_STR") );
 				OverCurveRadioButton.addActionListener(new java.awt.event.ActionListener() {
+					@Override
 					public void actionPerformed(java.awt.event.ActionEvent e) {
 						OverCurveRadioButton.setSelected(true);
 						setVisible(true);
@@ -193,6 +195,7 @@ public class ScaleBoardInputDialog extends JDialog {
 					StraightLineRadioButton.setBounds(new Rectangle(41, 86, 145, 20));
 					StraightLineRadioButton.setText(LanguageResource.getString("STRAIGHTLINERADIOBUTTON_STR") );
 					StraightLineRadioButton.addActionListener(new java.awt.event.ActionListener() {
+						@Override
 						public void actionPerformed(java.awt.event.ActionEvent e) {
 							StraightLineRadioButton.setSelected(true);
 							setVisible(true);
@@ -222,6 +225,7 @@ public class ScaleBoardInputDialog extends JDialog {
 			ScaleFinsCheckBox.setToolTipText(LanguageResource.getString("SCALEFINSMSGDETAILED"));
 			ScaleFinsCheckBox.setSelected(true);
 			ScaleFinsCheckBox.addItemListener(new java.awt.event.ItemListener() {
+				@Override
 				public void itemStateChanged(java.awt.event.ItemEvent e) {
 					//setVisible(false);
 					//mWasCancelled = false;
@@ -250,6 +254,7 @@ public class ScaleBoardInputDialog extends JDialog {
 			ScaleFinsCheckBoxFactor.setToolTipText(LanguageResource.getString("SCALEFINSMSGDETAILED"));
 			ScaleFinsCheckBoxFactor.setSelected(true);
 			ScaleFinsCheckBoxFactor.addItemListener(new java.awt.event.ItemListener() {
+				@Override
 				public void itemStateChanged(java.awt.event.ItemEvent e) {
 					//setVisible(false);
 					//mWasCancelled = false;
@@ -272,6 +277,7 @@ public class ScaleBoardInputDialog extends JDialog {
 			OkButton.setBounds(new Rectangle(95, 167, 110, 25));
 			OkButton.setText(LanguageResource.getString("OKBUTTON_STR"));
 			OkButton.addActionListener(new java.awt.event.ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					setVisible(false);
 					mWasCancelled = false;
@@ -292,6 +298,7 @@ public class ScaleBoardInputDialog extends JDialog {
 			CancelButton.setBounds(new Rectangle(216, 370, 110, 25));
 			CancelButton.setText(LanguageResource.getString("CANCELBUTTON_STR"));
 			CancelButton.addActionListener(new java.awt.event.ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					setVisible(false);
 				}
@@ -310,7 +317,8 @@ public class ScaleBoardInputDialog extends JDialog {
 			LengthTextField = new JTextField();
 			LengthTextField.setBounds(new Rectangle(149, 120, 80, 20));
 			LengthTextField.addFocusListener(new java.awt.event.FocusListener() {
-				  public void focusLost(java.awt.event.FocusEvent e) {
+				  @Override
+				public void focusLost(java.awt.event.FocusEvent e) {
 				        if(ConstraintProportionsCheckBox.isSelected())
 				        {
 						double new_length=UnitUtils.convertInputStringToInternalLengthUnit(LengthTextField.getText());
@@ -319,7 +327,8 @@ public class ScaleBoardInputDialog extends JDialog {
 				        	mContentPane.repaint();
 				        }
 				  }
-				  public void focusGained(java.awt.event.FocusEvent e) {
+				  @Override
+				public void focusGained(java.awt.event.FocusEvent e) {
 				  	original_length=UnitUtils.convertInputStringToInternalLengthUnit(LengthTextField.getText());
 				  	original_width=UnitUtils.convertInputStringToInternalLengthUnit(WidthTextField.getText());
 				  	original_thickness=UnitUtils.convertInputStringToInternalLengthUnit(ThickTextField.getText());
@@ -339,7 +348,8 @@ public class ScaleBoardInputDialog extends JDialog {
 			WidthTextField = new JTextField();
 			WidthTextField.setBounds(new Rectangle(149, 150, 80, 20));
 			WidthTextField.addFocusListener(new java.awt.event.FocusListener() {
-				  public void focusLost(java.awt.event.FocusEvent e) {
+				  @Override
+				public void focusLost(java.awt.event.FocusEvent e) {
 				        if(ConstraintProportionsCheckBox.isSelected())
 				        {
 
@@ -349,7 +359,8 @@ public class ScaleBoardInputDialog extends JDialog {
 				        	mContentPane.repaint();
 				        }
 				  }
-				  public void focusGained(java.awt.event.FocusEvent e) {
+				  @Override
+				public void focusGained(java.awt.event.FocusEvent e) {
 				  	original_length=UnitUtils.convertInputStringToInternalLengthUnit(LengthTextField.getText());
 				  	original_width=UnitUtils.convertInputStringToInternalLengthUnit(WidthTextField.getText());
 				  	original_thickness=UnitUtils.convertInputStringToInternalLengthUnit(ThickTextField.getText());
@@ -369,7 +380,8 @@ public class ScaleBoardInputDialog extends JDialog {
 			ThickTextField = new JTextField();
 			ThickTextField.setBounds(new Rectangle(149, 180, 80, 20));
 			ThickTextField.addFocusListener(new java.awt.event.FocusListener() {
-				  public void focusLost(java.awt.event.FocusEvent e) {
+				  @Override
+				public void focusLost(java.awt.event.FocusEvent e) {
 				        if(ConstraintProportionsCheckBox.isSelected())
 				        {
 						double new_thickness=UnitUtils.convertInputStringToInternalLengthUnit(ThickTextField.getText());
@@ -378,7 +390,8 @@ public class ScaleBoardInputDialog extends JDialog {
 				        	mContentPane.repaint();
 				        }
 				  }
-				  public void focusGained(java.awt.event.FocusEvent e) {
+				  @Override
+				public void focusGained(java.awt.event.FocusEvent e) {
 				  	original_length=UnitUtils.convertInputStringToInternalLengthUnit(LengthTextField.getText());
 				  	original_width=UnitUtils.convertInputStringToInternalLengthUnit(WidthTextField.getText());
 				  	original_thickness=UnitUtils.convertInputStringToInternalLengthUnit(ThickTextField.getText());
@@ -401,67 +414,67 @@ public class ScaleBoardInputDialog extends JDialog {
 		return FactorTextField;
 	}
 	
-	void setBoardLength(double length)
+	public void setBoardLength(double length)
 	{
 		LengthTextField.setText(UnitUtils.convertLengthToCurrentUnit(length, true));
 	}
 
-	void setBoardWidth(double width)
+	public void setBoardWidth(double width)
 	{
 		WidthTextField.setText(UnitUtils.convertLengthToCurrentUnit(width, true));
 	}
 	
-	void setBoardThick(double thick)
+	public void setBoardThick(double thick)
 	{
 		ThickTextField.setText(UnitUtils.convertLengthToCurrentUnit(thick, true));
 	}
 	
-	double getBoardLength()
+	public double getBoardLength()
 	{
 		return UnitUtils.convertInputStringToInternalLengthUnit(LengthTextField.getText());
 	}
 
-	double getBoardWidth()
+	public double getBoardWidth()
 	{
 		return UnitUtils.convertInputStringToInternalLengthUnit(WidthTextField.getText());
 	}
 	
-	double getBoardThick()
+	public double getBoardThick()
 	{
 		return UnitUtils.convertInputStringToInternalLengthUnit(ThickTextField.getText());
 	}
 
-	double getFactor()
+	public double getFactor()
 	{
 		return Double.parseDouble(FactorTextField.getText());
 	}
 	
-	boolean useOverCurve()
+	public boolean useOverCurve()
 	{
 		return OverCurveRadioButton.isSelected();
 	}
 	
-	boolean scaleFins()
+	public boolean scaleFins()
 	{
 		return ScaleFinsCheckBox.isSelected();
 	}
 	
-	boolean scaleBottomRocker()
+	public boolean scaleBottomRocker()
 	{
 		return ScaleBottomRockerCheckBox.isSelected();
 	}
 	
-	boolean scaleFinsFactor()
+	public boolean scaleFinsFactor()
 	{
 		return ScaleFinsCheckBoxFactor.isSelected();
 	}
 	
-	boolean wasCancelled()
+	public boolean wasCancelled()
 	{
 		return mWasCancelled;
 	}
 	
-	boolean scaleThroughFactor()
+	public boolean scaleThroughFactor()
 	{
 		return mScaleThroughFactor;
 	}

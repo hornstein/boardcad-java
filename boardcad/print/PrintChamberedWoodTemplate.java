@@ -183,10 +183,10 @@ public class PrintChamberedWoodTemplate extends JComponent implements Printable 
 		paper.setImageableArea(0,0,dim.width, dim.height);
 		format.setPaper(paper);
 
-		BezierBoardDrawUtil.printProfile(jd, border, dim.height*3.0/5.0, (dim.width-(border*2))/(BoardCAD.getInstance().getCurrentBrd().getLength()), mPaintGrid,BoardCAD.getInstance().getCurrentBrd(), mOffsetFromCenter, 0.0, false, 0.0, 0.0);
-		printChambering(jd, border, dim.height*3.0/5.0, (dim.width-(border*2))/(BoardCAD.getInstance().getCurrentBrd().getLength()),BoardCAD.getInstance().getCurrentBrd(), mOffsetFromCenter, mPlankThickness, mDeckAndBottomMinimumThickness);
-		BezierBoardDrawUtil.printProfile(jd, new Color(200,200,200), 1.0, border, dim.height*3.0/5.0, (dim.width-(border*2))/(BoardCAD.getInstance().getCurrentBrd().getLength()), false, BoardCAD.getInstance().getCurrentBrd(), mOffsetFromCenter + mPlankThickness, 0.0, false, 0.0, 0.0);
-		printAlignmentMarks(jd, border, dim.height*3.0/5.0, (dim.width-(border*2))/(BoardCAD.getInstance().getCurrentBrd().getLength()),BoardCAD.getInstance().getCurrentBrd(), mOffsetFromCenter, mPlankThickness, mDeckAndBottomMinimumThickness);
+		BezierBoardDrawUtil.printProfile(jd, border, dim.height*3.0/5.0, (dim.width-(border*2))/(BoardCAD.getInstance().getCurrentBrd().getLength()), 0.0, mPaintGrid,BoardCAD.getInstance().getCurrentBrd(), mOffsetFromCenter, 0.0, false, 0.0, 0.0);
+		printChambering(jd, border, dim.height*3.0/5.0, (dim.width-(border*2))/(BoardCAD.getInstance().getCurrentBrd().getLength()), 0.0, BoardCAD.getInstance().getCurrentBrd(), mOffsetFromCenter, mPlankThickness, mDeckAndBottomMinimumThickness);
+		BezierBoardDrawUtil.printProfile(jd, new Color(200,200,200), 1.0, border, dim.height*3.0/5.0, (dim.width-(border*2))/(BoardCAD.getInstance().getCurrentBrd().getLength()), 0.0, false, BoardCAD.getInstance().getCurrentBrd(), mOffsetFromCenter + mPlankThickness, 0.0, false, 0.0, 0.0);
+		printAlignmentMarks(jd, border, dim.height*3.0/5.0, (dim.width-(border*2))/(BoardCAD.getInstance().getCurrentBrd().getLength()), 0.0, BoardCAD.getInstance().getCurrentBrd(), mOffsetFromCenter, mPlankThickness, mDeckAndBottomMinimumThickness);
 
 }
 
@@ -256,23 +256,23 @@ public class PrintChamberedWoodTemplate extends JComponent implements Printable 
 			
 			BezierBoardDrawUtil.printProfile(jd,
 					-pageFormat.getImageableWidth()*(pageIndex%widthInPages),
-					-pageFormat.getImageableHeight()*(pageIndex/widthInPages), 72/2.54, mPaintGrid,BoardCAD.getInstance().getCurrentBrd(), mOffsetFromCenter, 0.0, false, 0.0, 0.0);
+					-pageFormat.getImageableHeight()*(pageIndex/widthInPages), 72/2.54, 0.0, mPaintGrid,BoardCAD.getInstance().getCurrentBrd(), mOffsetFromCenter, 0.0, false, 0.0, 0.0);
 			
 			if(mDrawChambering)
 			{
 				printChambering(jd, 
 						-pageFormat.getImageableWidth()*(pageIndex%widthInPages),
-						-pageFormat.getImageableHeight()*(pageIndex/widthInPages), 72/2.54,BoardCAD.getInstance().getCurrentBrd(), mOffsetFromCenter, mPlankThickness, mDeckAndBottomMinimumThickness);
+						-pageFormat.getImageableHeight()*(pageIndex/widthInPages), 72/2.54, 0.0, BoardCAD.getInstance().getCurrentBrd(), mOffsetFromCenter, mPlankThickness, mDeckAndBottomMinimumThickness);
 				BezierBoardDrawUtil.printProfile(jd, new Color(200,200,200), 1.0,
 						-pageFormat.getImageableWidth()*(pageIndex%widthInPages),
-						-pageFormat.getImageableHeight()*(pageIndex/widthInPages), 72/2.54, false, BoardCAD.getInstance().getCurrentBrd(), mOffsetFromCenter + mPlankThickness, 0.0, false, 0.0, 0.0);
+						-pageFormat.getImageableHeight()*(pageIndex/widthInPages), 72/2.54, 0.0, false, BoardCAD.getInstance().getCurrentBrd(), mOffsetFromCenter + mPlankThickness, 0.0, false, 0.0, 0.0);
 			}
 			
 			if(mDrawAlignmentMarks)
 			{
 				printAlignmentMarks(jd, 
 						-pageFormat.getImageableWidth()*(pageIndex%widthInPages),
-						-pageFormat.getImageableHeight()*(pageIndex/widthInPages), 72/2.54, BoardCAD.getInstance().getCurrentBrd(), mOffsetFromCenter, mPlankThickness, mDeckAndBottomMinimumThickness);
+						-pageFormat.getImageableHeight()*(pageIndex/widthInPages), 72/2.54, 0.0, BoardCAD.getInstance().getCurrentBrd(), mOffsetFromCenter, mPlankThickness, mDeckAndBottomMinimumThickness);
 			}
 			
 			return 0;
@@ -281,7 +281,7 @@ public class PrintChamberedWoodTemplate extends JComponent implements Printable 
 		return -1;
 	}
 	
-	public static void printChambering(AbstractDraw d, double offsetX, double offsetY, double scale, BezierBoard brd, double centerOffset, double plankThickness, double deckAndBottomMinimumThickness)
+	public static void printChambering(AbstractDraw d, double offsetX, double offsetY, double scale, double rotation, BezierBoard brd, double centerOffset, double plankThickness, double deckAndBottomMinimumThickness)
 	{	
 		if(brd.isEmpty()) {
 			return;	
@@ -289,7 +289,7 @@ public class PrintChamberedWoodTemplate extends JComponent implements Printable 
 		
 		System.out.printf("\nCHAMBERING\n");
 
-		AffineTransform savedTransform = BezierBoardDrawUtil.setTransform(d, offsetX, offsetY, scale);	
+		AffineTransform savedTransform = BezierBoardDrawUtil.setTransform(d, offsetX, offsetY, scale, rotation);	
 		Stroke stroke = new BasicStroke((float)(2.0/scale));
 		d.setStroke(stroke);
 		d.setColor(new Color(0,0,0));
@@ -370,7 +370,7 @@ public class PrintChamberedWoodTemplate extends JComponent implements Printable 
 		d.setTransform(savedTransform);		
 	}
 
-	public static void printAlignmentMarks(AbstractDraw d, double offsetX, double offsetY, double scale, BezierBoard brd, double centerOffset, double plankThickness, double deckAndBottomMinimumThickness)
+	public static void printAlignmentMarks(AbstractDraw d, double offsetX, double offsetY, double scale, double rotation, BezierBoard brd, double centerOffset, double plankThickness, double deckAndBottomMinimumThickness)
 	{	
 		if(brd.isEmpty()) {
 			return;	
@@ -378,7 +378,7 @@ public class PrintChamberedWoodTemplate extends JComponent implements Printable 
 		
 		System.out.printf("\nALIGNMENT MARKS\n");
 
-		AffineTransform savedTransform = BezierBoardDrawUtil.setTransform(d, offsetX, offsetY, scale);	
+		AffineTransform savedTransform = BezierBoardDrawUtil.setTransform(d, offsetX, offsetY, scale, rotation);	
 		Stroke stroke = new BasicStroke((float)(1.0/scale));
 		d.setStroke(stroke);
 		d.setColor(new Color(255,20,20));
@@ -395,8 +395,8 @@ public class PrintChamberedWoodTemplate extends JComponent implements Printable 
 			double x = i*UnitUtils.FOOT;
 			
 			//Check if there is some template to draw upon
-			double deck = BezierBoardDrawUtil.getDeck(brd, x, y, deckAndBottomMinimumThickness);
-			double bottom = BezierBoardDrawUtil.getBottom(brd, x, y, deckAndBottomMinimumThickness);
+			double deck = BezierBoardDrawUtil.getDeckWithSkinCompensation(brd, x, y, deckAndBottomMinimumThickness);
+			double bottom = BezierBoardDrawUtil.getBottomWithSkinCompensation(brd, x, y, deckAndBottomMinimumThickness);
 			
 			if(deck < bottom)
 			{

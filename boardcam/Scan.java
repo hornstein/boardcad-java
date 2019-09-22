@@ -1373,7 +1373,7 @@ public class Scan
 		ArrayList<Point2D.Double> gpArray=BoardCAD.getInstance().getSelectedEdit().getGuidePoints();
 		BezierSpline[] bs=BoardCAD.getInstance().getSelectedEdit().getActiveBezierSplines(brd);
         
-		final JTabbedPane mTabbedPane = BoardCAD.getInstance().getmTabbedPane();
+		final JTabbedPane mTabbedPane = BoardCAD.getInstance().getTabbedPane();
 		if (mTabbedPane.getSelectedIndex() == 5 || (mTabbedPane.getSelectedIndex() == 2 && BoardCAD.getInstance().getFourViewName() == "QuadViewCrossSection" ))
 		{
 			approximateCrossSection(bs[0], gpArray);

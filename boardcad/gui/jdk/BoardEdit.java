@@ -7,7 +7,6 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -24,36 +23,36 @@ import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JSplitPane;
 import javax.swing.event.MouseInputListener;
 
 import board.BezierBoard;
-
 import cadcore.BezierKnot;
 import cadcore.BezierSpline;
+import cadcore.MathUtils;
 import cadcore.UnitUtils;
 import cadcore.VecMath;
+import boardcad.commands.BrdCommand;
+import boardcad.commands.BrdInputCommand;
 import boardcad.i18n.LanguageResource;
 
 public class BoardEdit extends JComponent implements AbstractEditor, MouseInputListener, MouseWheelListener  {
 	static final long serialVersionUID=1L;
-	protected double mOffsetX;
-	protected double mOffsetY;
-	protected double mScale = 1.0f;
-	ArrayList<BezierKnot> mSelectedControlPoints = new ArrayList<BezierKnot>();
-	protected double mGhostOffsetX = 0;
-	protected double mGhostOffsetY = 0;
-	protected double mGhostRot = 0;
-	protected double mOriginalOffsetX = 0;
-	protected double mOriginalOffsetY = 0;
+	public double mOffsetX;
+	public double mOffsetY;
+	public double mScale = 1.0f;
+	public ArrayList<BezierKnot> mSelectedControlPoints = new ArrayList<BezierKnot>();
+	public double mGhostOffsetX = 0;
+	public double mGhostOffsetY = 0;
+	public double mGhostRot = 0;
+	public double mOriginalOffsetX = 0;
+	public double mOriginalOffsetY = 0;
 
-	protected int mDrawControl = 0;
-	protected double theta=30;
-	protected double zeta=45;	
+	public int mDrawControl = 0;
+	public double theta=30;
+	public double zeta=45;	
 
-	protected double[][] mRotationMatrix;
+	public double[][] mRotationMatrix;
 
 	double BORDER = 2;	//% of width
 
@@ -97,18 +96,20 @@ public class BoardEdit extends JComponent implements AbstractEditor, MouseInputL
 	protected double mPreviousOffsetX=0.0;
 	protected double mPreviousOffsetY=0.0;
 	
+	public boolean mIsCrossSectionEdit=false;
+	
 	public BoardEdit()
 	{
 		super();
 
-		double[][] m1 = {{Math.cos(-theta*3.1415/180.0), 0.0, -Math.sin(-theta*3.1415/180.0)},
+		double[][] m1 = {{Math.cos(-theta*Math.PI/180.0), 0.0, -Math.sin(-theta*Math.PI/180.0)},
 				{0.0, 1.0, 0.0},
-		                {Math.sin(-theta*3.1415/180.0), 0.0, Math.cos(-theta*3.1415/180.0)}}; 
+		                {Math.sin(-theta*Math.PI/180.0), 0.0, Math.cos(-theta*Math.PI/180.0)}}; 
 		double[][] m2 = {{1.0, 0.0, 0.0},
-				{0.0, Math.cos(-zeta*3.1415/180.0), -Math.sin(-zeta*3.1415/180.0)},
-		                {0.0, Math.sin(-zeta*3.1415/180.0), Math.cos(-zeta*3.1415/180.0)}}; 
+				{0.0, Math.cos(-zeta*Math.PI/180.0), -Math.sin(-zeta*Math.PI/180.0)},
+		                {0.0, Math.sin(-zeta*Math.PI/180.0), Math.cos(-zeta*Math.PI/180.0)}}; 
 
-		mRotationMatrix=cross_product(m1,m2);
+		mRotationMatrix=MathUtils.cross_product(m1,m2);
 
 //		Hint at good sizes for this component.
 
@@ -243,7 +244,7 @@ public class BoardEdit extends JComponent implements AbstractEditor, MouseInputL
 		return BoardCAD.getInstance().isPaintingVolumeDistribution();
 	}
 
-	protected BezierBoard getCurrentBrd()
+	public BezierBoard getCurrentBrd()
 	{
 		return BoardCAD.getInstance().getCurrentBrd();
 	}
@@ -365,8 +366,8 @@ public class BoardEdit extends JComponent implements AbstractEditor, MouseInputL
 	{
 		Point2D.Double brdPoint = new Point2D.Double();
 
-		brdPoint.x = ((double)scrPoint.x - mOffsetX)/ mScale*((mDrawControl&BezierBoardDrawUtil.FlipX)!=0?-1.0f:1.0f);
-		brdPoint.y = ((double)scrPoint.y - mOffsetY)/ mScale*((mDrawControl&BezierBoardDrawUtil.FlipY)!=0?-1.0f:1.0f);
+		brdPoint.x = (scrPoint.x - mOffsetX)/ mScale*((mDrawControl&BezierBoardDrawUtil.FlipX)!=0?-1.0f:1.0f);
+		brdPoint.y = (scrPoint.y - mOffsetY)/ mScale*((mDrawControl&BezierBoardDrawUtil.FlipY)!=0?-1.0f:1.0f);
 
 		return brdPoint;
 	}
@@ -511,25 +512,9 @@ public class BoardEdit extends JComponent implements AbstractEditor, MouseInputL
 		return (Point2D.Double)getActiveBezierSplines(getCurrentBrd())[0].getControlPoint(getActiveBezierSplines(getCurrentBrd())[0].getNrOfControlPoints()-1).getEndPoint().clone();
 	}
 	
-	private double[][] cross_product(double[][] m1, double[][] m2)
-	{
-		double[][] m=new double[3][3];
-		
-		m[0][0]=m1[0][0]*m2[0][0]+m1[1][0]*m2[0][1]+m1[2][0]*m2[0][2];
-		m[1][0]=m1[0][0]*m2[1][0]+m1[1][0]*m2[1][1]+m1[2][0]*m2[1][2];
-		m[2][0]=m1[0][0]*m2[2][0]+m1[1][0]*m2[2][1]+m1[2][0]*m2[2][2];
 
-		m[0][1]=m1[0][1]*m2[0][0]+m1[1][1]*m2[0][1]+m1[2][1]*m2[0][2];
-		m[1][1]=m1[0][1]*m2[1][0]+m1[1][1]*m2[1][1]+m1[2][1]*m2[1][2];
-		m[2][1]=m1[0][1]*m2[2][0]+m1[1][1]*m2[2][1]+m1[2][1]*m2[2][2];
-
-		m[0][2]=m1[0][2]*m2[0][0]+m1[1][2]*m2[0][1]+m1[2][2]*m2[0][2];
-		m[1][2]=m1[0][2]*m2[1][0]+m1[1][2]*m2[1][1]+m1[2][2]*m2[1][2];
-		m[2][2]=m1[0][2]*m2[2][0]+m1[1][2]*m2[2][1]+m1[2][2]*m2[2][2];
-		
-		return m;
-	}
 	
+	@Override
 	public void paintComponent(Graphics g) {
 
 		adjustScaleAndOffset();
@@ -543,9 +528,7 @@ public class BoardEdit extends JComponent implements AbstractEditor, MouseInputL
 		 */
 
 		Graphics2D g2d = (Graphics2D)g.create();
-
-
-
+		
 //		Turn on antialiasing, so painting is smooth.
 		if(BoardCAD.getInstance().isAntialiasing())
 		{
@@ -559,8 +542,6 @@ public class BoardEdit extends JComponent implements AbstractEditor, MouseInputL
 					RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		}
 
-
-
 //		Paint the background.
 		Color bkgColor = BoardCAD.getInstance().getBackgroundColor();
 		if(mParentContainer != null && !mParentContainer.isActive(this))
@@ -571,10 +552,6 @@ public class BoardEdit extends JComponent implements AbstractEditor, MouseInputL
 		g2d.setColor(bkgColor);
 
 		g2d.fillRect(0, 0, getWidth() - 1, getHeight() - 1);
-
-
-
-
 
 		if(mDrawControl == 0)
 		{
@@ -616,7 +593,7 @@ public class BoardEdit extends JComponent implements AbstractEditor, MouseInputL
 
 		if(BoardCAD.getInstance().isPaintingGrid())
 		{
-			BezierBoardDrawUtil.paintGrid(new JavaDraw(g2d), (double)mOffsetX, (double)mOffsetY, (double)mScale, BoardCAD.getInstance().getGridColor(), currentBrd.getLength(), currentBrd.getMaxWidth()/2.0, (mDrawControl&BezierBoardDrawUtil.FlipX)!=0, (mDrawControl&BezierBoardDrawUtil.FlipY)!=0);
+			BezierBoardDrawUtil.paintGrid(new JavaDraw(g2d), mOffsetX, mOffsetY, mScale, 0.0, BoardCAD.getInstance().getGridColor(), currentBrd.getLength(), currentBrd.getMaxWidth()/2.0, (mDrawControl&BezierBoardDrawUtil.FlipX)!=0, (mDrawControl&BezierBoardDrawUtil.FlipY)!=0);
 		}
 
 		
@@ -628,7 +605,7 @@ public class BoardEdit extends JComponent implements AbstractEditor, MouseInputL
 			{
 				if(orgBrd != null && getActiveBezierSplines(orgBrd) != null)
 				{
-					AffineTransform savedTransform = BezierBoardDrawUtil.setTransform(new JavaDraw(g2d), mOriginalOffsetX*mScale, mOriginalOffsetY*mScale, 1.0);	
+					AffineTransform savedTransform = BezierBoardDrawUtil.setTransform(new JavaDraw(g2d), mOriginalOffsetX*mScale, mOriginalOffsetY*mScale, 1.0, 0.0);	
 					drawPart(g2d, BoardCAD.getInstance().getOriginalBrdColor(), stroke, orgBrd, BoardCAD.getInstance().useFill());
 					g2d.setTransform(savedTransform);
 				}
@@ -652,7 +629,7 @@ public class BoardEdit extends JComponent implements AbstractEditor, MouseInputL
 			}
 			if(ghostBrd != null && getActiveBezierSplines(ghostBrd) != null)
 			{
-				AffineTransform savedTransform = BezierBoardDrawUtil.setTransform(new JavaDraw(g2d), mGhostOffsetX*mScale, mGhostOffsetY*mScale, mGhostRot, 1.0);	
+				AffineTransform savedTransform = BezierBoardDrawUtil.setTransform(new JavaDraw(g2d), mGhostOffsetX*mScale, mGhostOffsetY*mScale, 1.0, mGhostRot);	
 				
 				drawPart(g2d, BoardCAD.getInstance().getBrdColor(), stroke, ghostBrd, BoardCAD.getInstance().useFill());
 		
@@ -686,7 +663,7 @@ public class BoardEdit extends JComponent implements AbstractEditor, MouseInputL
 			{
 				if(ghostBrd != null && getActiveBezierSplines(ghostBrd) != null)
 				{
-					AffineTransform savedTransform = BezierBoardDrawUtil.setTransform(new JavaDraw(g2d), mGhostOffsetX*mScale, mGhostOffsetY*mScale, mGhostRot, 1.0);	
+					AffineTransform savedTransform = BezierBoardDrawUtil.setTransform(new JavaDraw(g2d), mGhostOffsetX*mScale, mGhostOffsetY*mScale, 1.0, mGhostRot);	
 					drawPart(g2d, BoardCAD.getInstance().getGhostBrdColor(), stroke, ghostBrd, BoardCAD.getInstance().useFill());
 					g2d.setTransform(savedTransform);
 				}
@@ -711,7 +688,7 @@ public class BoardEdit extends JComponent implements AbstractEditor, MouseInputL
 
 			if(orgBrd != null && getActiveBezierSplines(orgBrd) != null)
 			{
-				AffineTransform savedTransform = BezierBoardDrawUtil.setTransform(new JavaDraw(g2d), mOriginalOffsetX*mScale, mOriginalOffsetY*mScale, 1.0);	
+				AffineTransform savedTransform = BezierBoardDrawUtil.setTransform(new JavaDraw(g2d), mOriginalOffsetX*mScale, mOriginalOffsetY*mScale, 1.0, 0.0);	
 				
 				drawPart(g2d, BoardCAD.getInstance().getBrdColor(), stroke, orgBrd, BoardCAD.getInstance().useFill());
 		
@@ -744,7 +721,7 @@ public class BoardEdit extends JComponent implements AbstractEditor, MouseInputL
 			{
 				if(orgBrd != null && getActiveBezierSplines(orgBrd) != null)
 				{
-					AffineTransform savedTransform = BezierBoardDrawUtil.setTransform(new JavaDraw(g2d), mOriginalOffsetX*mScale, mOriginalOffsetY*mScale, 1.0);	
+					AffineTransform savedTransform = BezierBoardDrawUtil.setTransform(new JavaDraw(g2d), mOriginalOffsetX*mScale, mOriginalOffsetY*mScale, 1.0, 0.0);	
 					drawPart(g2d, BoardCAD.getInstance().getOriginalBrdColor(), stroke, orgBrd, BoardCAD.getInstance().useFill());
 					g2d.setTransform(savedTransform);
 				}
@@ -754,7 +731,7 @@ public class BoardEdit extends JComponent implements AbstractEditor, MouseInputL
 			{
 				if(ghostBrd != null && getActiveBezierSplines(ghostBrd) != null)
 				{
-					AffineTransform savedTransform = BezierBoardDrawUtil.setTransform(new JavaDraw(g2d), mGhostOffsetX*mScale, mGhostOffsetY*mScale, mGhostRot, 1.0);	
+					AffineTransform savedTransform = BezierBoardDrawUtil.setTransform(new JavaDraw(g2d), mGhostOffsetX*mScale, mGhostOffsetY*mScale, 1.0, mGhostRot);	
 					drawPart(g2d, BoardCAD.getInstance().getGhostBrdColor(), stroke, ghostBrd, BoardCAD.getInstance().useFill());
 					g2d.setTransform(savedTransform);
 				}
@@ -825,27 +802,27 @@ public class BoardEdit extends JComponent implements AbstractEditor, MouseInputL
 
 	public void drawCircle(Graphics2D g, Color color, Stroke stroke, Point2D.Double pos) {
 
-		BezierBoardDrawUtil.paintCircle(new JavaDraw(g),mOffsetX, mOffsetY, mScale, color, stroke, pos, (mDrawControl&BezierBoardDrawUtil.FlipX)!=0, (mDrawControl&BezierBoardDrawUtil.FlipY)!=0);
+		BezierBoardDrawUtil.paintCircle(new JavaDraw(g),mOffsetX, mOffsetY, mScale, 0.0, color, stroke, pos, (mDrawControl&BezierBoardDrawUtil.FlipX)!=0, (mDrawControl&BezierBoardDrawUtil.FlipY)!=0);
 	}
 
 	public void drawPart(Graphics2D g, Color color, Stroke stroke, BezierBoard brd, boolean fill) 
 	{
-		BezierBoardDrawUtil.paintBezierSplines(new JavaDraw(g),mOffsetX, mOffsetY, mScale, color, stroke, getActiveBezierSplines(brd), mDrawControl, fill);	  			
+		BezierBoardDrawUtil.paintBezierSplines(new JavaDraw(g),mOffsetX, mOffsetY, mScale, 0.0, color, stroke, getActiveBezierSplines(brd), mDrawControl, fill);	  			
 	}
 
 	public void drawControlPoints(Graphics2D g, Stroke stroke, BezierBoard brd) 
 	{
-		BezierBoardDrawUtil.paintBezierControlPoints(new JavaDraw(g),mOffsetX, mOffsetY, mScale, stroke, getActiveBezierSplines(brd), (mParentContainer==null || mParentContainer.isActive(this))? mSelectedControlPoints:null, (mDrawControl&BezierBoardDrawUtil.FlipX)!=0, (mDrawControl&BezierBoardDrawUtil.FlipY)!=0);
+		BezierBoardDrawUtil.paintBezierControlPoints(new JavaDraw(g),mOffsetX, mOffsetY, mScale, 0.0, stroke, getActiveBezierSplines(brd), (mParentContainer==null || mParentContainer.isActive(this))? mSelectedControlPoints:null, (mDrawControl&BezierBoardDrawUtil.FlipX)!=0, (mDrawControl&BezierBoardDrawUtil.FlipY)!=0);
 	}
 
 	public void drawCurvature(Graphics2D g, Color color, Stroke stroke, BezierBoard brd) 
 	{
-		BezierBoardDrawUtil.paintCurvature(new JavaDraw(g), mOffsetX, mOffsetY, mScale, color, stroke, getActiveBezierSplines(brd), (mDrawControl&BezierBoardDrawUtil.FlipX)!=0, (mDrawControl&BezierBoardDrawUtil.FlipY)!=0, mCurvatureScale );
+		BezierBoardDrawUtil.paintCurvature(new JavaDraw(g), mOffsetX, mOffsetY, mScale, 0.0, color, stroke, getActiveBezierSplines(brd), (mDrawControl&BezierBoardDrawUtil.FlipX)!=0, (mDrawControl&BezierBoardDrawUtil.FlipY)!=0, mCurvatureScale );
 	}
 	
 	public void drawVolumeDistribution(Graphics2D g, Color color, Stroke stroke, BezierBoard brd) 
 	{
-		BezierBoardDrawUtil.paintVolumeDistribution(new JavaDraw(g), mOffsetX, mOffsetY, mScale, color, stroke, brd, (mDrawControl&BezierBoardDrawUtil.FlipX)!=0, true, mVolumeDistributionScale );
+		BezierBoardDrawUtil.paintVolumeDistribution(new JavaDraw(g), mOffsetX, mOffsetY, mScale, 0.0, color, stroke, brd, (mDrawControl&BezierBoardDrawUtil.FlipX)!=0, true, mVolumeDistributionScale );
 	}
 		
 	public void drawSlidingInfo(Graphics2D g, Color color, Stroke stroke, BezierBoard brd)
@@ -854,12 +831,12 @@ public class BoardEdit extends JComponent implements AbstractEditor, MouseInputL
 	
 	public void drawFins(Graphics2D g, Color color, Stroke stroke, BezierBoard brd)
 	{
-		BezierBoardDrawUtil.paintFins(new JavaDraw(g), mOffsetX, mOffsetY, mScale, color, stroke, brd.getFins(), (mDrawControl&BezierBoardDrawUtil.FlipX)!=0, (mDrawControl&BezierBoardDrawUtil.FlipY)!=0 );
+		BezierBoardDrawUtil.paintFins(new JavaDraw(g), mOffsetX, mOffsetY, mScale, 0.0, color, stroke, brd.getFins(), (mDrawControl&BezierBoardDrawUtil.FlipX)!=0, (mDrawControl&BezierBoardDrawUtil.FlipY)!=0 );
 	}
 	
 	public void drawStringer(Graphics2D g, Color color, Stroke stroke, BezierBoard brd)
 	{
-		AffineTransform savedTransform = BezierBoardDrawUtil.setTransform(new JavaDraw(g), mOffsetX, mOffsetY, mScale);	
+		AffineTransform savedTransform = BezierBoardDrawUtil.setTransform(new JavaDraw(g), mOffsetX, mOffsetY, mScale, 0.0);	
 
 		double mulX = ((mDrawControl&BezierBoardDrawUtil.FlipX)!=0)?-1:1;
 //		double mulY = ((mDrawControl&Brd.FlipY)!=0)?-1:1;
@@ -876,7 +853,7 @@ public class BoardEdit extends JComponent implements AbstractEditor, MouseInputL
 
 	public void drawCenterLine(Graphics2D g, Color color, Stroke stroke, double pos, double length)
 	{
-		AffineTransform savedTransform = BezierBoardDrawUtil.setTransform(new JavaDraw(g), mOffsetX, mOffsetY, mScale);	
+		AffineTransform savedTransform = BezierBoardDrawUtil.setTransform(new JavaDraw(g), mOffsetX, mOffsetY, mScale, 0.0 );	
 
 		double mulX = ((mDrawControl&BezierBoardDrawUtil.FlipX)!=0)?-1:1;
 //		double mulY = ((mDrawControl&Brd.FlipY)!=0)?-1:1;
@@ -895,7 +872,7 @@ public class BoardEdit extends JComponent implements AbstractEditor, MouseInputL
 	{
 		if(mBackgroundImage != null)
 		{
-			AffineTransform savedTransform = BezierBoardDrawUtil.setTransform(new JavaDraw(g), mOffsetX, mOffsetY, mScale);	
+			AffineTransform savedTransform = BezierBoardDrawUtil.setTransform(new JavaDraw(g), mOffsetX, mOffsetY, mScale, 0.0);	
 
 			final AffineTransform tmp = new AffineTransform();
 
@@ -956,7 +933,7 @@ public class BoardEdit extends JComponent implements AbstractEditor, MouseInputL
 
 		g.setStroke(new BasicStroke((float)(BoardCAD.getInstance().getGuidePointThickness()/mScale)));
 
-		AffineTransform savedTransform = BezierBoardDrawUtil.setTransform(new JavaDraw(g), mOffsetX, mOffsetY, mScale);	
+		AffineTransform savedTransform = BezierBoardDrawUtil.setTransform(new JavaDraw(g), mOffsetX, mOffsetY, mScale, 0.0);	
 
 		double crossSize = 4.0f/mScale;
 
@@ -986,6 +963,7 @@ public class BoardEdit extends JComponent implements AbstractEditor, MouseInputL
 	}
 
 
+	@Override
 	public void mousePressed(MouseEvent e) {
 		
 		if(mParentContainer != null)
@@ -1019,6 +997,7 @@ public class BoardEdit extends JComponent implements AbstractEditor, MouseInputL
 		}
 	}
 
+	@Override
 	public void mouseReleased(MouseEvent e) {
 		
 		if (mPopupMenu != null && e.isPopupTrigger()) {
@@ -1047,10 +1026,12 @@ public class BoardEdit extends JComponent implements AbstractEditor, MouseInputL
 		}
 	}
 
+	@Override
 	public void mouseEntered(MouseEvent e) {
 		mHasMouse = true;
 	}
 
+	@Override
 	public void mouseExited(MouseEvent e) {
 		mHasMouse = false;
 	}
@@ -1060,9 +1041,11 @@ public class BoardEdit extends JComponent implements AbstractEditor, MouseInputL
 		return mHasMouse;
 	}
 
+	@Override
 	public void mouseClicked(MouseEvent e) {
 	}
 
+	@Override
 	public void mouseMoved(MouseEvent e) {
 
 		mScreenCoord = e.getPoint();
@@ -1104,6 +1087,7 @@ public class BoardEdit extends JComponent implements AbstractEditor, MouseInputL
 		cmd.onMouseMove(this, e);
 	}
 
+	@Override
 	public void mouseDragged(MouseEvent e) {
 		mScreenCoord = e.getPoint();
 		mBrdCoord.setLocation(screenCoordinateToBrdCoordinate(mScreenCoord));
@@ -1118,6 +1102,7 @@ public class BoardEdit extends JComponent implements AbstractEditor, MouseInputL
 	
 	}
 	
+	@Override
 	public void mouseWheelMoved(MouseWheelEvent e)
 	{
 		BrdInputCommand cmd = (BrdInputCommand)getCurrentCommand();
@@ -1128,77 +1113,9 @@ public class BoardEdit extends JComponent implements AbstractEditor, MouseInputL
 		
 	}
 
+	@Override
 	public void fit_all()
 	{
 		fitBrd();
 	}
-}
-
-interface BrdEditParentContainer
-{
-	public void setActive(BoardEdit edit);	
-	public boolean isActive(BoardEdit edit);	
-	public BoardEdit getActive();
-}
-
-class BrdEditSplitPane extends JSplitPane implements BrdEditParentContainer
-{
-	static final long serialVersionUID=1L;
-	BoardEdit mActive = null;
-	
-	BrdEditSplitPane(int arg1, BoardEdit first, BoardEdit second)
-	{
-		super(arg1, first, second);
-		mActive = first;
-		first.mParentContainer = this;
-		second.mParentContainer = this;
-	}
-	
-	public void setActive(BoardEdit edit)
-	{
-		mActive = edit;
-		this.repaint();
-	}
-	
-	public boolean isActive(BoardEdit edit)
-	{
-		return (edit == mActive);
-	}
-	
-	public BoardEdit getActive()
-	{
-		return mActive;
-	}	
-}
-
-class QuadView extends JPanel implements BrdEditParentContainer
-{
-	static final long serialVersionUID=1L;
-	BoardEdit mActive = null;
-	
-	QuadView()
-	{
-		this.setLayout(new GridLayout(2,2,3,3));
-	}
-	
-	public void setActive(BoardEdit edit)
-	{
-		mActive = edit;
-		this.repaint();
-		BoardCAD.getInstance().getGuidePointsDialog().update();
-	}
-	
-	public boolean isActive(BoardEdit edit)
-	{
-		return (edit == mActive);
-	}
-	
-	public BoardEdit getActive()
-	{
-		if(mActive == null)
-			return (BoardEdit)getComponent(0);
-			
-		return mActive;
-	}	
-	
 }

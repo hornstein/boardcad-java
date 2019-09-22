@@ -38,6 +38,12 @@ public class VecMath {
 	{
 		p0.setLocation(p0.x*v,p0.y*v);
 	}
+	
+	public static void normalizeVector(Point2D.Double p0)
+	{
+		
+		scaleVector(p0, 1.0/getVecLength(p0));
+	}
 
 	static double getVecDot(Point2D.Double p0, Point2D.Double p1)
 	{

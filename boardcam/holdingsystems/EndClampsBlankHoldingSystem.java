@@ -16,13 +16,17 @@ import javax.media.j3d.ColoringAttributes;
 import javax.media.j3d.GeometryArray;
 import javax.media.j3d.IndexedQuadArray;
 import javax.media.j3d.LineArray;
+import javax.media.j3d.Material;
 import javax.media.j3d.Shape3D;
+import javax.media.j3d.TransparencyAttributes;
 
 import cadcore.BezierSpline;
 import cadcore.UnitUtils;
 import cadcore.AxisAlignedBoundingBox;
 
 import com.sun.j3d.utils.geometry.Box;
+
+import javax.vecmath.Color3f;
 import javax.vecmath.Point2d;
 import javax.vecmath.Point3d;
 import javax.vecmath.Vector3d;
@@ -121,13 +125,13 @@ public class EndClampsBlankHoldingSystem extends AbstractBlankHoldingSystem {
 	}
 
 	public void setBoardDeckOffsetPos(Vector3d offset) {
-		super.setBoardDeckOffsetPos(offset);
 		mBoardBottomOffset.set(offset.x, offset.y, -offset.z);
+		super.setBoardDeckOffsetPos(offset);
 	}
 
 	public void setBoardDeckOffsetAngle(double angle) {
-		super.setBoardDeckOffsetAngle(angle);
 		mBoardBottomRotation = -angle;
+		super.setBoardDeckOffsetAngle(angle);
 	}
 
 	public Vector3d getBoardDeckOffsetPos() {
@@ -153,6 +157,8 @@ public class EndClampsBlankHoldingSystem extends AbstractBlankHoldingSystem {
 		String holdingSystemStr = LanguageResource
 				.getString("BLANKHOLDINGSYSTEMCATEGORY_STR");
 		Settings holdingSystemSettings = mConfig.getCategory(holdingSystemStr);
+		if(!holdingSystemSettings.containsSetting(CLAMP_LENGTH))return;
+		
 		double clampLength = holdingSystemSettings.getMeasurement(CLAMP_LENGTH);
 		double clampHeight = holdingSystemSettings.getMeasurement(CLAMP_HEIGHT);
 		double clampWidth = holdingSystemSettings.getMeasurement(CLAMP_WIDTH);
@@ -193,6 +199,10 @@ public class EndClampsBlankHoldingSystem extends AbstractBlankHoldingSystem {
 
 			mRotatedLength = (Math.sin(rotAngle) * (noseBottom - tailBottom))
 					+ (Math.cos(rotAngle) * blank.getLength());
+		}
+		
+		if(mChangeListener != null){
+			mChangeListener.onChange();
 		}
 	}
 
@@ -497,6 +507,16 @@ public class EndClampsBlankHoldingSystem extends AbstractBlankHoldingSystem {
 		mTailClampShape = new Shape3D(mTailClampBox);
 
 		Appearance supportStructureApperance = new Appearance();
+/*		Color3f ambient = new Color3f(0.1f, 0.1f, 0.5f);
+		Color3f emissive = new Color3f(0.0f, 0.0f, 0.0f);
+		Color3f diffuse = new Color3f(0.1f, 0.1f, 0.6f);
+		Color3f specular = new Color3f(0.1f, 0.1f, 0.8f);
+//		TransparencyAttributes supportStructureTransparencyAttributes = new TransparencyAttributes();
+//		supportStructureTransparencyAttributes.setTransparency(0.0f);
+
+		// Set up the material properties
+		supportStructureApperance.setMaterial(new Material(ambient, emissive, diffuse, specular, 128.0f));
+//		supportStructureApperance.setTransparencyAttributes(supportStructureTransparencyAttributes);*/
 		ColoringAttributes supportStructureColor = new ColoringAttributes();
 		supportStructureColor.setColor(0.1f, 0.1f, 0.5f);
 		supportStructureApperance.setColoringAttributes(supportStructureColor);
@@ -514,6 +534,8 @@ public class EndClampsBlankHoldingSystem extends AbstractBlankHoldingSystem {
 		String holdingSystemStr = LanguageResource
 				.getString("BLANKHOLDINGSYSTEMCATEGORY_STR");
 		Settings holdingSystemSettings = mConfig.getCategory(holdingSystemStr);
+		if(!holdingSystemSettings.containsSetting(CLAMP_LENGTH))return;
+
 		double clampLength = holdingSystemSettings.getMeasurement(CLAMP_LENGTH)
 				* UnitUtils.MILLIMETER_PR_CENTIMETER;
 		double clampHeight = holdingSystemSettings.getMeasurement(CLAMP_HEIGHT)
@@ -569,6 +591,8 @@ public class EndClampsBlankHoldingSystem extends AbstractBlankHoldingSystem {
 		String holdingSystemStr = LanguageResource
 				.getString("BLANKHOLDINGSYSTEMCATEGORY_STR");
 		Settings holdingSystemSettings = mConfig.getCategory(holdingSystemStr);
+		if(!holdingSystemSettings.containsSetting(CLAMP_LENGTH))return;
+		
 		double clampLength = holdingSystemSettings.getMeasurement(CLAMP_LENGTH)
 				* UnitUtils.MILLIMETER_PR_CENTIMETER;
 		double clampHeight = holdingSystemSettings.getMeasurement(CLAMP_HEIGHT)

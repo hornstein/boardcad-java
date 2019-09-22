@@ -108,6 +108,7 @@ public class ComboBoxDialog extends JDialog {
 			OkButton.setText(LanguageResource.getString("OKBUTTON_STR") );
 			OkButton.setMinimumSize(new Dimension(50, 14));
 			OkButton.addActionListener(new java.awt.event.ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					setVisible(false);
 					mWasCancelled = false;
@@ -128,6 +129,7 @@ public class ComboBoxDialog extends JDialog {
 			CancelButton.setText(LanguageResource.getString("CANCELBUTTON_STR") );
 			CancelButton.setMinimumSize(new Dimension(50, 14));
 			CancelButton.addActionListener(new java.awt.event.ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					setVisible(false);
 				}

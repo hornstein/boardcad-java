@@ -7,7 +7,7 @@ import javax.vecmath.Point3d;
 
 class BezierBoardLinearInterpolationSurfaceModel extends AbstractBezierBoardSurfaceModel
 {
-	synchronized public Point3d getDeckAt(BezierBoard brd, final double x, final double y)
+	public Point3d getDeckAt(BezierBoard brd, final double x, final double y)
 	{		
 		//Calculate scales
 		double widthAtPos = brd.getWidthAtPos(x);
@@ -43,7 +43,7 @@ class BezierBoardLinearInterpolationSurfaceModel extends AbstractBezierBoardSurf
 	}
 	
 
-	synchronized public Point3d getBottomAt(final BezierBoard brd, final double x, final double y)
+	public Point3d getBottomAt(final BezierBoard brd, final double x, final double y)
 	{
 		//Calculate scales
 		double widthAtPos = brd.getWidthAtPos(x);
@@ -76,12 +76,12 @@ class BezierBoardLinearInterpolationSurfaceModel extends AbstractBezierBoardSurf
 		return new Point3d(x,y,z);
 	}
 	
-	synchronized public Point3d getPointAt(BezierBoard brd, final double x, final double s, final double minAngle, final double maxAngle, boolean useMinimumAngleOnSharpCorners)
+	public Point3d getPointAt(BezierBoard brd, final double x, final double s, final double minAngle, final double maxAngle, boolean useMinimumAngleOnSharpCorners)
 	{
 		return null;
 	}
 
-	synchronized public double getCrosssectionAreaAt(final BezierBoard brd, final double x, int splits)
+	public double getCrosssectionAreaAt(final BezierBoard brd, final double x, int splits)
 	{
 		double a = 0.01;
 		double b = (brd.getWidthAtPos(x)/2) - 0.01;

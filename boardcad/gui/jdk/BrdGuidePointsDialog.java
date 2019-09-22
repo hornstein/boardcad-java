@@ -68,6 +68,7 @@ public class BrdGuidePointsDialog extends JDialog {
 // JAVA 6			GuidePointsTable.setFillsViewportHeight(true);
 			mGuidePointsTable.setModel(new AbstractTableModel() {
 				static final long serialVersionUID=1L;
+				@Override
 				public String getColumnName(int col) {
 					switch(col)
 					{
@@ -81,8 +82,11 @@ public class BrdGuidePointsDialog extends JDialog {
 						return "";
 					}
 				}
+				@Override
 				public int getRowCount() { return BoardCAD.getInstance().getSelectedEdit().getGuidePoints().size(); }
+				@Override
 				public int getColumnCount() { return 3; }
+				@Override
 				public Object getValueAt(int row, int col) {
 
 					switch(col)
@@ -100,6 +104,7 @@ public class BrdGuidePointsDialog extends JDialog {
 					}
 
 				}
+				@Override
 				public boolean isCellEditable(int row, int col)
 				{   
 					switch(col)
@@ -112,6 +117,7 @@ public class BrdGuidePointsDialog extends JDialog {
 						return true;
 					}
 				}
+				@Override
 				public void setValueAt(Object value, int row, int col) {
 					Point2D.Double pnt = BoardCAD.getInstance().getSelectedEdit().getGuidePoints().get(row);
 					double val = UnitUtils.convertInputStringToInternalLengthUnit((String)value);
@@ -139,6 +145,7 @@ public class BrdGuidePointsDialog extends JDialog {
 //					this.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, 0));
 				};
 
+				@Override
 				public void actionPerformed(ActionEvent arg0) {
 
 					BoardCAD.getInstance().getSelectedEdit().getGuidePoints().add(new Point2D.Double());
@@ -155,6 +162,7 @@ public class BrdGuidePointsDialog extends JDialog {
 //					this.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
 				};
 
+				@Override
 				public void actionPerformed(ActionEvent arg0) {
 
 					int[] ai = mGuidePointsTable.getSelectedRows();
@@ -176,9 +184,11 @@ public class BrdGuidePointsDialog extends JDialog {
 
 			mGuidePointsTable.add(menu);
 			mGuidePointsTable.addMouseListener(new MouseAdapter() {
+				@Override
 				public void mousePressed(MouseEvent e) {
 					showPopup(e);
 				}
+				@Override
 				public void mouseReleased(MouseEvent e) {
 					showPopup(e);
 				}

@@ -29,6 +29,7 @@ public class CategorizedSettingsComponent extends JComponent {
 		initialize();
 
 		mCategorizedSettings.addCategorySettingsChangeListener(new CategorySettingsChangeListener(){
+			@Override
 			public void onCategoryRemoved(String categoryName)
 			{
 				for(int i = 0; i < mTabbedPane.getTabCount(); i++)
@@ -40,6 +41,7 @@ public class CategorizedSettingsComponent extends JComponent {
 					}
 				}				
 			}
+			@Override
 			public void onCategoryAdded(String categoryName)
 			{
 				final Settings settings = mCategorizedSettings.getCategory(categoryName);

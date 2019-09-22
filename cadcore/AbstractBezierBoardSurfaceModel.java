@@ -11,6 +11,10 @@ abstract public class AbstractBezierBoardSurfaceModel
 	//LinearInterpolation is obsolete, keep for reference
 	public enum ModelType{LinearInterpolation, ControlPointInterpolation, SLinearInterpolation};
 	
+	static private BezierBoardControlPointInterpolationSurfaceModel mControlPointInterpolationInstance = new BezierBoardControlPointInterpolationSurfaceModel();
+	
+	static private BezierBoardSLinearInterpolationSurfaceModel mSLinearInterpolationInstance = new BezierBoardSLinearInterpolationSurfaceModel();
+	
 	static public AbstractBezierBoardSurfaceModel getBezierBoardSurfaceModel(ModelType modelType)
 	{
 
@@ -19,10 +23,10 @@ abstract public class AbstractBezierBoardSurfaceModel
 			
 		default:
 		case ControlPointInterpolation:
-			return new BezierBoardControlPointInterpolationSurfaceModel();
+			return mControlPointInterpolationInstance;
 			
 		case SLinearInterpolation:
-			return new BezierBoardSLinearInterpolationSurfaceModel();
+			return mSLinearInterpolationInstance;
 		}
 	}
 	
@@ -48,9 +52,9 @@ abstract public class AbstractBezierBoardSurfaceModel
 		
 		Point3d p1 = getDeckAt(brd,x,y);
 		Point3d p2 = getDeckAt(brd,x,yo);
-		Vector3d pv = new Vector3d(0, y-yo, p2.z-p1.z);
-		
 		Point3d p3 = getDeckAt(brd,xo,y);
+
+		Vector3d pv = new Vector3d(0, y-yo, p2.z-p1.z);
 		Vector3d lv = new Vector3d(x-xo, 0, p3.z-p1.z);
 		
 		Vector3d normalVec = new Vector3d();

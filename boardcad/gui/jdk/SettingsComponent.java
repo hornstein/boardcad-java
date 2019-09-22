@@ -156,8 +156,11 @@ class SettingsComponent extends JComponent
 						return "";
 					}
 				}
+				@Override
 				public int getRowCount() { return mSettings.size(); }
+				@Override
 				public int getColumnCount() { return 2; }
+				@Override
 				public Object getValueAt(final int row, final int col) 
 				{
 					if(mSettings.isHidden(row))
@@ -249,6 +252,7 @@ class ColorRenderer extends JLabel implements TableCellRenderer {
 		setOpaque(true); //MUST do this for background to show up.
 	}
 
+	@Override
 	public Component getTableCellRendererComponent(
 			final JTable table, final Object color,
 			final boolean isSelected, final boolean hasFocus,
@@ -291,6 +295,7 @@ class ColorEditor extends AbstractCellEditor implements TableCellEditor, ActionL
 				null); //no CANCEL button handler
 	}
 
+	@Override
 	public void actionPerformed(final ActionEvent e) {
 		if (EDIT.equals(e.getActionCommand())) {
 //			The user has clicked the cell, so
@@ -307,11 +312,13 @@ class ColorEditor extends AbstractCellEditor implements TableCellEditor, ActionL
 	}
 
 //	Implement the one CellEditor method that AbstractCellEditor doesn't.
+	@Override
 	public Object getCellEditorValue() {
 		return currentColor;
 	}
 
 //	Implement the one method defined by TableCellEditor.
+	@Override
 	public Component getTableCellEditorComponent(final JTable table,
 			final Object value,
 			final boolean isSelected,
@@ -344,6 +351,7 @@ class FileNameEditor extends AbstractCellEditor implements TableCellEditor, Acti
 
 	}
 
+	@Override
 	public void actionPerformed(final ActionEvent e) {
 		if (EDIT.equals(e.getActionCommand())) {
 //			The user has clicked the cell, so
@@ -361,6 +369,7 @@ class FileNameEditor extends AbstractCellEditor implements TableCellEditor, Acti
 	}
 
 //	Implement the one CellEditor method that AbstractCellEditor doesn't.
+	@Override
 	public Object getCellEditorValue() {
 		final File file = fileChooser.getSelectedFile();
 		if(file == null)
@@ -372,6 +381,7 @@ class FileNameEditor extends AbstractCellEditor implements TableCellEditor, Acti
 	}
 	
 //	Implement the one method defined by TableCellEditor.
+	@Override
 	public Component getTableCellEditorComponent(final JTable table,
 			final Object value,
 			final boolean isSelected,
@@ -399,6 +409,7 @@ class ActionEditor extends AbstractCellEditor implements TableCellEditor, Action
 		button.setBorderPainted(true);
 	}
 
+	@Override
 	public void actionPerformed(final ActionEvent e) {
 		if (EDIT.equals(e.getActionCommand())) {
 //			The user has clicked the cell, so
@@ -412,17 +423,19 @@ class ActionEditor extends AbstractCellEditor implements TableCellEditor, Action
 	}
 
 //	Implement the one CellEditor method that AbstractCellEditor doesn't.
+	@Override
 	public Object getCellEditorValue() {
 		return value;
 	}
 
 //	Implement the one method defined by TableCellEditor.
+	@Override
 	public Component getTableCellEditorComponent(final JTable table,
 			final Object value,
 			final boolean isSelected,
 			final int row,
 			final int column) {
-		this.value = ((SettingsAction)value);
+		this.value = (value);
 		return button;
 	}
 }
@@ -443,7 +456,8 @@ class EnumEditor extends AbstractCellEditor implements TableCellEditor {
 		comboBox.setEditable(false);
 		comboBox.addActionListener(new ActionListener()
 		{
-			    public void actionPerformed(ActionEvent e) {
+			    @Override
+				public void actionPerformed(ActionEvent e) {
 			        fireEditingStopped();
 			    }
 		});
@@ -451,6 +465,7 @@ class EnumEditor extends AbstractCellEditor implements TableCellEditor {
 
 
 //	Implement the one CellEditor method that AbstractCellEditor doesn't.
+	@Override
 	public Object getCellEditorValue() {
 		for(Map.Entry<Integer, String> entry : enu.getAlternatives().entrySet())
 		{			
@@ -464,6 +479,7 @@ class EnumEditor extends AbstractCellEditor implements TableCellEditor {
 	}
 
 //	Implement the one method defined by TableCellEditor.
+	@Override
 	public Component getTableCellEditorComponent(final JTable table,
 			final Object value,
 			final boolean isSelected,

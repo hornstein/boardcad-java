@@ -39,6 +39,8 @@ import cadcore.NurbsPoint;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Vector;
+
 
 import javax.media.j3d.IndexedQuadArray;
 import javax.media.j3d.QuadArray;
@@ -126,8 +128,6 @@ public class BezierBoard extends AbstractBoard implements Cloneable {
 	private double mCenterOfMass = 0;
 	
 	private AbstractBezierBoardSurfaceModel.ModelType mInterpolationType = AbstractBezierBoardSurfaceModel.ModelType.ControlPointInterpolation;
-
-	private Shape3D m3DModel = null;
 	
 	public BezierBoard()
 	{
@@ -979,40 +979,6 @@ public class BezierBoard extends AbstractBoard implements Cloneable {
 
 	public double getDeckAtPos(double x, double y)
 	{
-		
-/*
-		//Calculate scales
-		double widthAtPos = getWidthAtPos(x);
-		double thicknessAtPos = getThicknessAtPos(x);
-		
-		//Get the position from function since we cheat with the crosssections at tip and tail
-		double pos1 = getPreviousCrossSectionPos(x);
-		double pos2 = getNextCrossSectionPos(x);
-
-		//Get crosssections but use the first and last real crosssections if we're at the dummy crosssections at nose and tail
-		BezierBoardCrossSection c1 = getPreviousCrossSection(x);
-		BezierBoardCrossSection c2 = getNextCrossSection(x);
-
-		//Get scales and values
-		double Scale1Y = c1.getWidth() / widthAtPos;
-		double Scale1Z = c1.getCenterThickness()/ thicknessAtPos;
-
-		double Scale2Y = c2.getWidth() / widthAtPos;
-		double Scale2Z = c2.getCenterThickness()/ thicknessAtPos;
-
-		double v1 = c1.getDeckAtPos(y*Scale1Y);
-		double v2 = c2.getDeckAtPos(y*Scale2Y);
-
-		v1 /= Scale1Z;
-		v2 /= Scale2Z;
-
-		//Get blended point
-		double p = (x - pos1)/(pos2 - pos1);
-
-		double z  = ((1-p)*v1) + (p*v2);
-
-		return z;
-*/
 		return AbstractBezierBoardSurfaceModel.getBezierBoardSurfaceModel(getInterpolationType()).getDeckAt(this,x, y).getZ();
 	}
 
@@ -1041,12 +1007,12 @@ public class BezierBoard extends AbstractBoard implements Cloneable {
 	
 	public Vector3d getDeckNormalAt(double x, double y)
 	{
-		return AbstractBezierBoardSurfaceModel.getBezierBoardSurfaceModel(getInterpolationType()).getBottomNormalAt(this,x, y);
+		return AbstractBezierBoardSurfaceModel.getBezierBoardSurfaceModel(getInterpolationType()).getDeckNormalAt(this,x, y);
 	}
 	
 	public Vector3d getBottomNormalAt(double x, double y)
 	{
-		return AbstractBezierBoardSurfaceModel.getBezierBoardSurfaceModel(getInterpolationType()).getDeckNormalAt(this,x, y);
+		return AbstractBezierBoardSurfaceModel.getBezierBoardSurfaceModel(getInterpolationType()).getBottomNormalAt(this,x, y);
 
 	}
 
@@ -1767,7 +1733,7 @@ public class BezierBoard extends AbstractBoard implements Cloneable {
 		{
 			double y = aabbCenter.y - (width/2.0);
 
-			for(int j = 0; i <= widthSplits; i++)
+			for(int j = 0; j <= widthSplits; j++)
 			{
 				double z = getDeckAt(x, y);
 				z += getRockerAtPos(x);
@@ -1999,7 +1965,7 @@ public class BezierBoard extends AbstractBoard implements Cloneable {
 			BezierKnot myControlPoint=before_ControlPoints.getControlPoint(i);
 			Point2D.Double ControlPoint_point=myControlPoint.getEndPoint();
 
-			if(before_outline<=ControlPoint_point.getX())
+			if(before_outline<ControlPoint_point.getX())
 			{
 				before_outline=ControlPoint_point.getX();
 				before_z=before_outline;
@@ -2016,7 +1982,7 @@ public class BezierBoard extends AbstractBoard implements Cloneable {
 			BezierKnot myControlPoint=after_ControlPoints.getControlPoint(i);
 			Point2D.Double ControlPoint_point=myControlPoint.getEndPoint();
 
-			if(after_outline<=ControlPoint_point.getX())
+			if(after_outline<ControlPoint_point.getX())
 			{
 				after_outline=ControlPoint_point.getX();
 				after_z=after_outline;
@@ -2413,266 +2379,6 @@ public class BezierBoard extends AbstractBoard implements Cloneable {
 	}
 	
 
-	public void update3DModel(Shape3D model)
-	{				
-		double lengthAccuracy = 1.0;
-		double deckWidthAccuracy = 1.0;
-		double bottomWidthAccuracy = 1.0;
-		
-		double length = getLength();
-		double width = getCenterWidth();
-		
-		int lengthSteps = (int)(length/lengthAccuracy) +1; 
-//		int lengthSteps = 200; 
-		int deckSteps = (int)((width/2.0)/deckWidthAccuracy) +1; 
-		int railSteps = 0; 
-		int bottomSteps = (int)(width/2.0/bottomWidthAccuracy) +1; 
-
-		double lengthStep = length/lengthSteps; 
-
-		int nrOfCoords = (lengthSteps)*(deckSteps+railSteps+bottomSteps)*4*2;
-		
-		QuadArray quads;
-		quads = new QuadArray(nrOfCoords, IndexedQuadArray.COORDINATES | IndexedQuadArray.NORMALS);
-
-		Point3d[] vertices = new Point3d[4];
-		Vector3f[] normals = new Vector3f[4];
-		Point3d[] mirrorVertices = new Point3d[4];
-		Vector3f[] mirrorNormals = new Vector3f[4];
-		for(int i = 0; i < 4; i++)
-		{
-			vertices[i] = new Point3d();
-			normals[i] = new Vector3f();
-			mirrorVertices[i] = new Point3d();
-			mirrorNormals[i] = new Vector3f();
-		}
-		
-		int nrOfQuads = 0;
-		double xPos = 0.0;
-
-		double minAngle = -45.0; 
-		double maxAngle = 45.0; 
-		for(int i = 0; i < deckSteps; i++)
-		{	
-			xPos = 0.0;
-
-			//TODO: temporary fix because the control point surface model doesn't work well near stringer. Remove when surface model works better
-			if( i == 0)
-			{
-				vertices[0].set(getSurfacePoint(xPos, 0.0));
-				Point2D.Double normal = getDeck().getNormalAt(xPos);				
-				normals[0].set(new Vector3d(normal.x, 0.0, normal.y));
-			}
-			else
-			{
-				//first coords in lengthwise strip
-				vertices[0].set(getSurfacePoint(xPos, minAngle, maxAngle, i, deckSteps));
-				normals[0].set(getSurfaceNormal(xPos, minAngle, maxAngle, i, deckSteps));
-			}
-
-			vertices[3].set(getSurfacePoint(xPos, minAngle, maxAngle, i+1, deckSteps));
-			normals[3].set(getSurfaceNormal(xPos, minAngle, maxAngle, i+1, deckSteps));
-
-//			normals[0].scale(-1.0f);
-//			normals[3].scale(-1.0f);
-			
-			xPos += lengthStep;
-
-			for(int j = 1; j <= lengthSteps; j++)
-			{	
-				//TODO: temporary fix because the control point surface model doesn't work well near stringer. Remove when surface model works better
-				if( i == 0)
-				{
-					vertices[1].set(getSurfacePoint(xPos, 0.0));
-					Point2D.Double normal = getDeck().getNormalAt(xPos);				
-					normals[1].set(new Vector3d(normal.x, 0.0, normal.y));
-				}
-				else
-				{
-					//Two next coords
-					vertices[1].set(getSurfacePoint(xPos, minAngle, maxAngle, i, deckSteps));
-					normals[1].set(getSurfaceNormal(xPos, minAngle, maxAngle, i, deckSteps));
-				}
-	
-				vertices[2].set(getSurfacePoint(xPos, minAngle, maxAngle, i+1, deckSteps));
-				normals[2].set(getSurfaceNormal(xPos, minAngle, maxAngle, i+1, deckSteps));
-			
-//				normals[1].scale(-1.0f);
-//				normals[2].scale(-1.0f);
-
-//				if(j == lengthSteps/2)
-//				{
-//					for(int h = 0; h<1; h++)
-//					{
-//						System.out.printf("update3DModel() on deck: normals[%d] %f,%f,%f\n", h, normals[h].x, normals[h].y, normals[h].z);
-//					}
-//				}
-
-				//Build one quad
-				quads.setCoordinates(nrOfQuads*4, vertices);
-				quads.setNormals(nrOfQuads*4, normals);
-				nrOfQuads++;
-				
-				//Mirror
-				for(int n = 0; n < 4; n++)
-				{
-					mirrorVertices[n].set(vertices[3-n]);
-					mirrorNormals[n].set(normals[3-n]);
-					
-					mirrorVertices[n].y = -mirrorVertices[n].y; 
-					mirrorNormals[n].y = -mirrorNormals[n].y;
-				}
-				
-				//Build mirrored quad
-				quads.setCoordinates(nrOfQuads*4, mirrorVertices);
-				quads.setNormals(nrOfQuads*4, mirrorNormals);
-				nrOfQuads++;
-
-				//Get ready for next step
-				vertices[0].set(vertices[1]);
-				normals[0].set(normals[1]);
-
-				vertices[3].set(vertices[2]);
-				normals[3].set(normals[2]);
-
-				xPos += lengthStep;
-				
-			}
-		}		
-/*
-		minAngle = maxAngle; 
-		maxAngle = 174.0; 
-		for(int i = 0; i < railSteps; i++)
-		{	
-			xPos = 0.0;
-			
-			//first coords in lengthwise strip
-			vertices[0].set(getSurfacePoint(xPos, minAngle, maxAngle, i, railSteps));
-			normals[0].set(getSurfaceNormal(xPos, minAngle, maxAngle, i, railSteps));
-
-			vertices[3].set(getSurfacePoint(xPos, minAngle, maxAngle, i+1, railSteps));
-			normals[3].set(getSurfaceNormal(xPos, minAngle, maxAngle, i+1, railSteps));
-
-			xPos += lengthStep;
-
-			for(int j = 1; j <= lengthSteps; j++)
-			{	
-				//Two next coords
-				vertices[1].set(getSurfacePoint(xPos, minAngle, maxAngle, i, railSteps));
-				normals[1].set(getSurfaceNormal(xPos, minAngle, maxAngle, i, railSteps));
-
-				vertices[2].set(getSurfacePoint(xPos, minAngle, maxAngle, i+1, railSteps));
-				normals[2].set(getSurfaceNormal(xPos, minAngle, maxAngle, i+1, railSteps));
-
-				if(j == lengthSteps/2)
-				{
-					for(int h = 0; h<1; h++)
-					{
-						System.out.printf("update3DModel() on rails: normals[%d] %f,%f,%f\n", h, normals[h].x, normals[h].y, normals[h].z);
-					}
-				}
-				
-				//Build one quad
-				quads.setCoordinates(nrOfQuads*4, vertices);
-				quads.setNormals(nrOfQuads*4, normals);
-				nrOfQuads++;
-				
-				//Mirror
-				for(int n = 0; n < 4; n++)
-				{
-					mirrorVertices[n].set(vertices[3-n]);
-					mirrorNormals[n].set(normals[3-n]);
-					
-					mirrorVertices[n].y = -mirrorVertices[n].y; 
-					mirrorNormals[n].y = -mirrorNormals[n].y;
-				}
-				
-				//Build mirrored quad
-				quads.setCoordinates(nrOfQuads*4, mirrorVertices);
-				quads.setNormals(nrOfQuads*4, mirrorNormals);
-				nrOfQuads++;
-
-				//Get ready for next step
-				vertices[0].set(vertices[1]);
-				normals[0].set(normals[1]);
-
-				vertices[3].set(vertices[2]);
-				normals[3].set(normals[2]);
-
-				xPos += lengthStep;
-				
-			}
-		}		
-*/
-		minAngle = maxAngle; 
-		maxAngle = 360.0; 
-		for(int i = 0; i < bottomSteps; i++)
-		{	
-			xPos = 0.0;
-			
-			//first coords in lengthwise strip
-			vertices[0].set(getSurfacePoint(xPos, minAngle, maxAngle, i, bottomSteps));
-			normals[0].set(getSurfaceNormal(xPos, minAngle, maxAngle, i, bottomSteps));
-
-			vertices[3].set(getSurfacePoint(xPos, minAngle, maxAngle, i+1, bottomSteps));
-			normals[3].set(getSurfaceNormal(xPos, minAngle, maxAngle, i+1, bottomSteps));
-			
-
-			xPos += lengthStep;
-
-			for(int j = 1; j <= lengthSteps; j++)
-			{	
-				//Two next coords
-				vertices[1].set(getSurfacePoint(xPos, minAngle, maxAngle, i, bottomSteps));
-				normals[1].set(getSurfaceNormal(xPos, minAngle, maxAngle, i, bottomSteps));
-
-				vertices[2].set(getSurfacePoint(xPos, minAngle, maxAngle, i+1, bottomSteps));
-				normals[2].set(getSurfaceNormal(xPos, minAngle, maxAngle, i+1, bottomSteps));
-
-//				if(j == lengthSteps/2)
-//				{
-//					for(int h = 0; h<1; h++)
-//					{
-//						System.out.printf("update3DModel() on bottom: normals[%d] %f,%f,%f\n", h, normals[h].x, normals[h].y, normals[h].z);
-//					}
-//				}
-				
-				//Build one quad
-				quads.setCoordinates(nrOfQuads*4, vertices);
-				quads.setNormals(nrOfQuads*4, normals);
-				nrOfQuads++;
-				
-				//Mirror
-				for(int n = 0; n < 4; n++)
-				{
-					mirrorVertices[n].set(vertices[3-n]);
-					mirrorNormals[n].set(normals[3-n]);
-					
-					mirrorVertices[n].y = -mirrorVertices[n].y; 
-					mirrorNormals[n].y = -mirrorNormals[n].y;
-				}
-				
-				//Build mirrored quad
-				quads.setCoordinates(nrOfQuads*4, mirrorVertices);
-				quads.setNormals(nrOfQuads*4, mirrorNormals);
-				nrOfQuads++;
-
-				//Get ready for next step
-				vertices[0].set(vertices[1]);
-				normals[0].set(normals[1]);
-
-				vertices[3].set(vertices[2]);
-				normals[3].set(normals[2]);
-
-				xPos += lengthStep;
-				
-			}
-		}		
-
-		model.setGeometry(quads);
-
-	}
-	
 	public String toString()
 	{
 		String str = new String();

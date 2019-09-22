@@ -1,5 +1,5 @@
 package boardcad.gui.jdk;
-
+/*
 import board.NurbsBoard;
 import cadcore.NurbsSurface;
 import cadcore.NurbsPoint;
@@ -29,49 +29,20 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
 
-
-
-import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.GLEventListener;
-import javax.media.opengl.GLProfile;
-import javax.media.opengl.GLCapabilities;
-import javax.media.opengl.awt.GLCanvas;
-import javax.media.opengl.awt.GLJPanel;
-
-
-import javax.media.opengl.GL;
-import javax.media.opengl.GL2;
-import javax.media.opengl.glu.GLU;
-
-
-import cadcore.NurbsPoint;
-
+import com.jogamp.opengl.*;
+import com.jogamp.opengl.awt.*;
+import com.jogamp.opengl.glu.*;
 import com.sun.j3d.utils.behaviors.vp.OrbitBehavior;
 import com.sun.j3d.utils.image.TextureLoader;
 import com.sun.j3d.utils.universe.PlatformGeometry;
 import com.sun.j3d.utils.universe.SimpleUniverse;
 
-
-
-
 import java.awt.*;
 import java.awt.event.*;
+
 import javax.swing.*;
-import javax.media.opengl.GL2;
-import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.GLEventListener;
-import javax.media.opengl.awt.GLCanvas;
-import javax.media.opengl.glu.GLU;
-import com.jogamp.opengl.util.FPSAnimator;
-import static javax.media.opengl.GL.*;  // GL constants
-import static javax.media.opengl.GL2.*; // GL2 constants
-
-
-
 
 import com.sun.j3d.utils.universe.ViewingPlatform;
-
-
 
 
 //=========================================================JOGL Panel
@@ -124,9 +95,9 @@ class ShapingBay
         glu = new GLU();                         // get GL Utilities
         gl.glClearColor(0.4f, 0.4f, 0.4f, 0.0f); // set background (clear) color
         gl.glClearDepth(1.0f);      // set clear depth value to farthest
-        gl.glEnable(GL_DEPTH_TEST); // enables depth testing
-        gl.glDepthFunc(GL_LEQUAL);  // the type of depth test to do
-        gl.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST); // best perspective correction
+        gl.glEnable(GL.GL_DEPTH_TEST); // enables depth testing
+        gl.glDepthFunc(GL.GL_LEQUAL);  // the type of depth test to do
+        gl.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST); // best perspective correction
  //       gl.glShadeModel(GL_SMOOTH); // blends colors nicely, and smoothes out lighting
     }
     
@@ -141,22 +112,22 @@ class ShapingBay
         float[] lightPos = {0.0f, 0.0f, 10.0f, SHINE_ALL_DIRECTIONS};
         float[] lightColorAmbient = {0.2f, 0.2f, 0.2f, 1f};
         float[] lightColorSpecular = {0.6f, 0.6f, 0.6f, 1f};
-        gl.glLightfv(GL_LIGHT0, GL_POSITION, lightPos, 0);
-        gl.glLightfv(GL_LIGHT0, GL_AMBIENT, lightColorAmbient, 0);
+        gl.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, lightPos, 0);
+        gl.glLightfv(GL.GL_LIGHT0, GL.GL_AMBIENT, lightColorAmbient, 0);
 //        gl.glLightfv(GL_LIGHT0, GL_SPECULAR, lightColorSpecular, 0);
         gl.glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColorSpecular, 0);
         
         // Enable lighting in GL.
-        gl.glEnable(GL_LIGHTING);
-        gl.glEnable(GL_LIGHT0);
+        gl.glEnable(GL.GL_LIGHTING);
+        gl.glEnable(GL.GL_LIGHT0);
 
         // Set material properties.
         float[] rgba = {1.0f, 1.0f, 1.0f, 1.0f};
-        gl.glMaterialfv(GL_FRONT, GL_AMBIENT, rgba, 0);
+        gl.glMaterialfv(GL.GL_FRONT, GL.GL_AMBIENT, rgba, 0);
 //        gl.glMaterialfv(GL_FRONT, GL_SPECULAR, rgba, 0);
-        gl.glMaterialfv(GL_FRONT, GL_DIFFUSE, rgba, 0);
+        gl.glMaterialfv(GL.GL_FRONT, GL.GL_DIFFUSE, rgba, 0);
 //        gl.glMaterialf(GL_FRONT, GL_SHININESS, 0.5f);
-        gl.glShadeModel(GL_FLAT);
+        gl.glShadeModel(GL.GL_FLAT);
 
         
         // Set the view port (display area) to cover the entire window
@@ -405,4 +376,4 @@ class JOGLThreeDView extends Panel implements ItemListener, MouseListener, Mouse
 
 
 
-
+*/
