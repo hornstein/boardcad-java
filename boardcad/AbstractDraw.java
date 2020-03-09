@@ -14,10 +14,10 @@ import java.awt.geom.Point2D;
 
 
 /*
- * Abstraction of drawing rutines
+ * Abstraction of drawing routines
  * Useful for 'printing' to other formats, like g-code, dxf, pdf, etc.
  * This way the same base functions can be used to print to several formats,
- * making it possible to reuse significan portions of code for less code to maintain
+ * making it possible to reuse significant portions of code for less code to maintain
  * This is a minimum subset of Graphics2D for drawing a board
  * An alternative would be to extend Graphics2D for these operations,
  * however Graphics2D is quite extensive. By using a small subset of

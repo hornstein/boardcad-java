@@ -29,6 +29,7 @@ public class SettingDialog extends JDialog {
 		JButton okButton = new JButton();
 		okButton.setText(LanguageResource.getString("OKBUTTON_STR"));
 		okButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent e) {
 				setVisible(false);
 				mWasCancelled = false;
@@ -37,6 +38,7 @@ public class SettingDialog extends JDialog {
 		JButton cancelButton = new JButton();
 		cancelButton.setText(LanguageResource.getString("CANCELBUTTON_STR"));
 		cancelButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent e) {
 				setVisible(false);
 			}

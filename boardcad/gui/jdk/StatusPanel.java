@@ -7,7 +7,7 @@ import javax.swing.JPanel;
 import boardcad.i18n.LanguageResource;
 
 //=========================================================Status Panel
-class StatusPanel extends JPanel
+public class StatusPanel extends JPanel
 {
 	private static final long serialVersionUID = 1L;
 //	private UserInterface user_interface;

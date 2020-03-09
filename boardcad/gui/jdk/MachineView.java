@@ -78,6 +78,7 @@ public class MachineView extends JPanel implements AbstractEditor
 		add(splitPane,BorderLayout.CENTER);
 	}
 
+	@Override
 	public void fit_all()
 	{
 		mMachine2DView.fit_all();

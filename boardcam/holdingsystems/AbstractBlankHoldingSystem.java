@@ -35,6 +35,11 @@ public class AbstractBlankHoldingSystem {
 	double mBoardBottomRotation=0;
 	
 	BranchGroup mModelRoot = new BranchGroup();
+	ChangeListener mChangeListener = null;
+
+	public void setChangeListener(ChangeListener changeListener){
+		mChangeListener = changeListener;
+	}
 
 	public void init()
 	{
@@ -74,13 +79,19 @@ public class AbstractBlankHoldingSystem {
 	public void setBoardDeckOffsetPos(Vector3d offset)
 	{
 		mBoardDeckOffset.set(offset);
-		//System.out.printf("AbstractBlankHoldingSystem.setBoardDeckOffsetPos: %s, %f,%f,%f\n", toString(), mBoardDeckOffset.x, mBoardDeckOffset.y, mBoardDeckOffset.z);
+		System.out.printf("AbstractBlankHoldingSystem.setBoardDeckOffsetPos: %s, %f,%f,%f\n", toString(), mBoardDeckOffset.x, mBoardDeckOffset.y, mBoardDeckOffset.z);
+		if(mChangeListener != null){
+			mChangeListener.onChange();
+		}
 	}
 
 	public void setBoardDeckOffsetAngle(double angle)
 	{
 		mBoardDeckRotation = angle;
 		System.out.printf("AbstractBlankHoldingSystem.setBoardDeckOffsetAngle: %s %f\n", toString(), mBoardDeckRotation);
+		if(mChangeListener != null){
+			mChangeListener.onChange();
+		}
 	}
 
 	public Vector3d getBoardDeckOffsetPos()

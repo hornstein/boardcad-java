@@ -14,13 +14,13 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import boardcad.FileTools;
+import boardcad.commands.BrdInputCommand;
 import boardcad.i18n.LanguageResource;
 import boardcam.MachineConfig;
 
@@ -67,7 +67,7 @@ public class MachineDialog extends JFrame implements KeyEventDispatcher,
 		// CNC JDialog Icon
 		try {
 			ImageIcon icon = new ImageIcon(getClass().getResource(
-					"icons/mill png 16x16.png"));
+					"../../icons/mill png 16x16.png"));
 			super.setIconImage(icon.getImage());
 
 		} catch (Exception e) {
@@ -80,6 +80,7 @@ public class MachineDialog extends JFrame implements KeyEventDispatcher,
 				.setText(LanguageResource.getString("GENERATEBUTTON_STR"));
 		generateButton.addActionListener(new java.awt.event.ActionListener() {
 
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent e) {
 				final JFileChooser fc = new JFileChooser();
 
@@ -142,6 +143,7 @@ public class MachineDialog extends JFrame implements KeyEventDispatcher,
 		return mMachineView;
 	}
 
+	@Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
 		if(getFocusOwner() != null)
 		{

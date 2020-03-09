@@ -181,6 +181,11 @@ public class Settings {
 	{
 		((Enumeration)mSettings.get(key).mValue).setValue(value);
 	}
+	
+	public boolean containsSetting(final String key)
+	{
+		return mSettings.containsKey(key);
+	}
 
 	public Setting getSetting(final String key)
 	{

@@ -12,7 +12,7 @@ import cadcore.MathUtils.Function;
 class BezierBoardControlPointInterpolationSurfaceModel extends
 		AbstractBezierBoardSurfaceModel {
 
-	synchronized public Point3d getDeckAt(final BezierBoard brd, final double x,
+	public Point3d getDeckAt(final BezierBoard brd, final double x,
 			final double y) {
 		Function func = new Function() {
 			public double f(double s) {
@@ -29,8 +29,9 @@ class BezierBoardControlPointInterpolationSurfaceModel extends
 		return point;
 	}
 
-	synchronized public Point3d getBottomAt(final BezierBoard brd, final double x,
+	public Point3d getBottomAt(final BezierBoard brd, final double x,
 			final double y) {
+		
 		Function func = new Function() {
 			public double f(double s) {
 				return getPointAt(brd, x, s, 90.0, 270.0, true).y;
@@ -41,9 +42,10 @@ class BezierBoardControlPointInterpolationSurfaceModel extends
 		return getPointAt(brd, x, s, 90.0, 270.0, true);
 	}
 
-	synchronized public Point3d getPointAt(final BezierBoard brd, double x, double s,
+	public Point3d getPointAt(final BezierBoard brd, double x, double s,
 			double minAngle, double maxAngle,
 			boolean useMinimumAngleOnSharpCorners) {
+		
 		if (x < 0.1)
 			x = 0.1;
 
@@ -84,7 +86,7 @@ class BezierBoardControlPointInterpolationSurfaceModel extends
 		return point;
 	}
 
-	synchronized public Vector3d getNormalAt(final BezierBoard brd, double x, double s,
+	public Vector3d getNormalAt(final BezierBoard brd, double x, double s,
 			double minAngle, double maxAngle,
 			boolean useMinimumAngleOnSharpCorners) {
 		if (x < 0.1)
@@ -105,10 +107,11 @@ class BezierBoardControlPointInterpolationSurfaceModel extends
 			x = brd.getLength() - 1.0;
 		}
 
-		BezierBoardCrossSection crossSection = (BezierBoardCrossSection) (brd
-				.getInterpolatedCrossSection(x).clone());
+		BezierBoardCrossSection crossSection = brd .getInterpolatedCrossSection(x);
 		if (crossSection == null)
 			return new Vector3d(0.0, 0.0, 0.0);
+
+		crossSection = (BezierBoardCrossSection)crossSection.clone();
 
 		double minS = BezierSpline.ONE;
 		double maxS = BezierSpline.ZERO;
@@ -195,7 +198,7 @@ class BezierBoardControlPointInterpolationSurfaceModel extends
 		return normalVec;
 	}
 
-	synchronized public double getCrosssectionAreaAt(final BezierBoard brd, final double x,
+	public double getCrosssectionAreaAt(final BezierBoard brd, final double x,
 			int splits) {
 		final BezierBoardCrossSection crossSection = brd
 				.getInterpolatedCrossSection(x);

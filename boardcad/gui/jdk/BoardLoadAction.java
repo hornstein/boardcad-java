@@ -46,20 +46,22 @@ public class BoardLoadAction extends AbstractAction {
 	}
 
 
+	@Override
 	public void actionPerformed(ActionEvent event)
 	{
 //		Create a file dialog box to prompt for a new file to display
-		FileFilter filter = new FileFilter()
+		FileFilter boardFilesFilter = new FileFilter()
 		{
 
 //			Accept all directories and brd and s3d files.
+			@Override
 			public boolean accept(File f) {
 				if (f.isDirectory()) {
 					return true;
 				}
 
 				String extension = FileTools.getExtension(f);
-				if (extension != null && (extension.equals("brd") || extension.equals("s3d") || extension.equals("srf") || extension.equals("cad") || extension.equals("stp") || extension.equals("step")))
+				if (extension != null && (extension.equals("brd") || extension.equals("s3d") || extension.equals("s3dx") || extension.equals("srf") || extension.equals("cad") || extension.equals("stp") || extension.equals("step")))
 				{
 					return true;
 				}
@@ -68,8 +70,38 @@ public class BoardLoadAction extends AbstractAction {
 			}
 
 //			The description of this filter
+			@Override
 			public String getDescription() {
 				return "Board files";
+			}
+
+
+
+		};
+		
+		FileFilter allFilesFilter = new FileFilter()
+		{
+
+//			Accept all directories and brd and s3d files.
+			@Override
+			public boolean accept(File f) {
+				if (f.isDirectory()) {
+					return true;
+				}
+
+				String extension = FileTools.getExtension(f);
+				if (extension != null)
+				{
+					return true;
+				}
+
+				return false;
+			}
+
+//			The description of this filter
+			@Override
+			public String getDescription() {
+				return "All files";
 			}
 
 
@@ -79,7 +111,8 @@ public class BoardLoadAction extends AbstractAction {
 		final JFileChooser fc = new JFileChooser();
 		fc.setFileView(new BoardFileView());
 		fc.setAccessory(new BoardPreview(fc));
-		fc.addChoosableFileFilter(filter);
+		fc.addChoosableFileFilter(boardFilesFilter);
+		fc.addChoosableFileFilter(allFilesFilter);
 
 		fc.setAcceptAllFileFilterUsed(false);
 
@@ -110,6 +143,20 @@ public class BoardLoadAction extends AbstractAction {
 		if(ext.compareToIgnoreCase("s3d")==0)
 		{
 			ret = S3dReader.loadFile(mBrd, filename);
+			
+			if(ret == 1)	//Show warning dialog
+			{
+				JOptionPane.showMessageDialog(BoardCAD.getInstance().getFrame(), LanguageResource.getString("S3DTHICKNESSCURVENOTSUPPOSTEDMSG_STR"), LanguageResource.getString("S3DTHICKNESSCURVENOTSUPPOSTEDTITLE_STR"), JOptionPane.WARNING_MESSAGE);
+			}
+			
+			if(ret < 0)
+			{
+				errorStr = S3dReader.getErrorStr();
+			}
+		}
+		else if(ext.compareToIgnoreCase("s3dx")==0)
+		{
+			ret = S3dxReader.loadFile(mBrd, filename);
 			
 			if(ret == 1)	//Show warning dialog
 			{

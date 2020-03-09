@@ -64,7 +64,7 @@ public class MathUtils {
 
 	public static class RootFinder
 	{
-		static public double ROOTFINER_VALUE_TOLERANCE = 0.001;
+		static public double ROOTFINER_VALUE_TOLERANCE = 0.005;
 		
 		static public double getRoot(Function function, double targetValue)
 		{
@@ -76,15 +76,31 @@ public class MathUtils {
 			double x = SecantRootFinder.getRoot(function, targetValue, minLimit, maxLimit);
 
 			//Sanity  check
-			if(Math.abs(function.f(x)-targetValue) > ROOTFINER_VALUE_TOLERANCE)
+			double sec_actualValue = function.f(x);
+			if(Math.abs(sec_actualValue-targetValue) > ROOTFINER_VALUE_TOLERANCE)
 			{
 //				System.out.printf("getRoot(): SecantRootFinder failed, x:%f, value:%f, targetValue:%f, error: %f\n", x, function.f(x), targetValue, function.f(x)-targetValue);				
 				
-				x = BisectRootFinder.getRoot(function, targetValue, minLimit, maxLimit);
+				double bis_x = BisectRootFinder.getRoot(function, targetValue, minLimit, maxLimit);
 				
-				if(Math.abs(function.f(x)-targetValue) > ROOTFINER_VALUE_TOLERANCE)
+				double bis_actualValue = function.f(x);
+				if(Math.abs(bis_actualValue-targetValue) > ROOTFINER_VALUE_TOLERANCE)
 				{
-//					System.out.printf("getRoot(): BisectRootFinder failed, x:%f, value:%f, targetValue:%f, error: %f\n", x, function.f(x), targetValue, function.f(x)-targetValue);				
+//					System.out.printf("getRoot(): BisectRootFinder failed, x:%f, value:%f, targetValue:%f, error: %f\n", x, function.f(x), targetValue, function.f(x)-targetValue);
+					
+					if(Math.abs(bis_actualValue-targetValue) < Math.abs(sec_actualValue-targetValue) )	//Test which is closest and return best result
+					{
+						x = bis_x;
+//						System.out.printf("getRoot(): Best result with bisect, x:%f, value:%f, targetValue:%f, error: %f\n", x, bis_actualValue, targetValue, bis_actualValue-targetValue);
+					}
+					else
+					{
+//						System.out.printf("getRoot(): Best result with secant, x:%f, value:%f, targetValue:%f, error: %f\n", x, sec_actualValue, targetValue, sec_actualValue-targetValue);						
+					}
+				}
+				else
+				{
+					x = bis_x;
 				}
 			}
 			
@@ -359,4 +375,54 @@ public class MathUtils {
 			return getCurveLength(function, min, max, 10);
 		}
 	}
+	
+	static public double[][] cross_product(double[][] m1, double[][] m2)
+	{
+		double[][] m=new double[3][3];
+		
+		m[0][0]=m1[0][0]*m2[0][0]+m1[1][0]*m2[0][1]+m1[2][0]*m2[0][2];
+		m[1][0]=m1[0][0]*m2[1][0]+m1[1][0]*m2[1][1]+m1[2][0]*m2[1][2];
+		m[2][0]=m1[0][0]*m2[2][0]+m1[1][0]*m2[2][1]+m1[2][0]*m2[2][2];
+
+		m[0][1]=m1[0][1]*m2[0][0]+m1[1][1]*m2[0][1]+m1[2][1]*m2[0][2];
+		m[1][1]=m1[0][1]*m2[1][0]+m1[1][1]*m2[1][1]+m1[2][1]*m2[1][2];
+		m[2][1]=m1[0][1]*m2[2][0]+m1[1][1]*m2[2][1]+m1[2][1]*m2[2][2];
+
+		m[0][2]=m1[0][2]*m2[0][0]+m1[1][2]*m2[0][1]+m1[2][2]*m2[0][2];
+		m[1][2]=m1[0][2]*m2[1][0]+m1[1][2]*m2[1][1]+m1[2][2]*m2[1][2];
+		m[2][2]=m1[0][2]*m2[2][0]+m1[1][2]*m2[2][1]+m1[2][2]*m2[2][2];
+		
+		return m;
+	}
+	
+	static public double[][] invert(double[][] a) {
+		/*
+		 * 
+		 * | a11 a12 a13 |-1 | a33a22-a32a23 -(a33a12-a32a13) a23a12-a22a13 | |
+		 * a21 a22 a23 | = 1/DET(A) * | -(a33a21-a31a23) a33a11-a31a13
+		 * -(a23a11-a21a13) | | a31 a32 a33 | | a32a21-a31a22 -(a32a11-a31a12)
+		 * a22a11-a21a12 |
+		 * 
+		 * DET(A) = a11(a33a22-a32a23)-a21(a33a12-a32a13)+a31(a23a12-a22a13)
+		 */
+
+		double det = a[0][0] * (a[2][2] * a[1][1] - a[2][1] * a[1][2])
+				- a[1][0] * (a[2][2] * a[0][1] - a[2][1] * a[0][2]) + a[2][0]
+				* (a[1][2] * a[0][1] - a[1][1] * a[0][2]);
+
+		double[][] b = {
+				{ (a[2][2] * a[1][1] - a[2][1] * a[1][2]) / det,
+						-(a[2][2] * a[0][1] - a[2][1] * a[0][2]) / det,
+						(a[1][2] * a[0][1] - a[1][1] * a[0][2]) / det },
+				{ -(a[2][2] * a[1][0] - a[2][0] * a[1][2]) / det,
+						(a[2][2] * a[0][0] - a[2][0] * a[0][2]) / det,
+						-(a[1][2] * a[0][0] - a[1][0] * a[0][2]) / det },
+				{ (a[2][1] * a[1][0] - a[2][0] * a[1][1]) / det,
+						-(a[2][1] * a[0][0] - a[2][0] * a[0][1]) / det,
+						(a[1][1] * a[0][0] - a[1][0] * a[0][1]) / det } };
+
+		return b;
+
+	}
+
 }

@@ -180,27 +180,14 @@ public class BezierBoardCrossSection implements Cloneable, Comparable {
 
 	}
 
-	public synchronized BezierBoardCrossSection interpolate(
+	public BezierBoardCrossSection interpolate(
 			BezierBoardCrossSection target, double t) {
 		try {
 			// boolean hasChanged = false;
 
 			BezierBoardCrossSection interpolationClone = new BezierBoardCrossSection();
-			BezierBoardCrossSection interpolationTargetClone = new BezierBoardCrossSection();
 
-			// if(!interpolationClone.equals(this))
-			// {
 			interpolationClone.set(this);
-			// hasChanged = true;
-			// }
-
-			// if(!interpolationTargetClone.equals(target))
-			// {
-			// interpolationTargetClone.set(target);
-			//
-			// hasChanged = true;
-			//
-			// }
 
 			BezierBoardCrossSection interpolationSandboxCopy = new BezierBoardCrossSection();
 			BezierBoardCrossSection interpolationTargetSandboxCopy = new BezierBoardCrossSection();
@@ -333,7 +320,7 @@ public class BezierBoardCrossSection implements Cloneable, Comparable {
 								next.getPoints()[1]);
 
 					} else {
-						return this;
+						return interpolationClone;
 					}
 				}
 			}
@@ -364,7 +351,9 @@ public class BezierBoardCrossSection implements Cloneable, Comparable {
 			}
 
 			return interpolated;
-		} catch (Exception e) {
+			
+		} 
+		catch (Exception e) {
 			System.out.println("Error occured in Brd::interpolate() "
 					+ e.toString());
 			return null;

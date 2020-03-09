@@ -1,6 +1,9 @@
 package cadcore;
 
+import com.sun.j3d.utils.shader.StringIO;
+
 import boardcad.i18n.LanguageResource;
+
 
 public class UnitUtils {
 
@@ -60,7 +63,7 @@ public class UnitUtils {
 		double value = 0;
 
 		try{
-			string = string.replace(",", ".");
+			string = string.replace(',', '.');
 			if(string.contains("\'") || string.contains("\"") )
 			{
 				if(string.contains("\'"))
@@ -436,17 +439,8 @@ public class UnitUtils {
 
 				format = format.concat("%1$d'");
 			}
-			if(inches >= 0.01)
-			{
-				format = format.concat("%2$." + mNrOfDecimals + "f");
-			}
 
-			
-			if(format.length() == 0 || format.equalsIgnoreCase("-"))
-			{
-				format = format.concat("0");
-			}
-			format = format.concat("\"");
+			format = format.concat("%2$." + mNrOfDecimals + "f\"");
 
 			return String.format(format, feet, inches);
 		}

@@ -36,6 +36,15 @@ public class FileTools
 		return tmp;
 	}
 
+	//Remove the extension
+	public static String removeExtension(String filename) {
+		String ext = getExtension(filename);
+		int i = filename.lastIndexOf('.');
+		String tmp = filename.substring(0,i);
+
+		return tmp;
+	}
+
 	//Append without affecting the extension
 	public static String append(String filename, String append) {
 		String ext = getExtension(filename);

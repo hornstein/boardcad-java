@@ -259,9 +259,9 @@ public class PrintSandwichTemplates extends JComponent implements Printable {
 //		BezierBoardDrawUtil.printBottomSkinTemplate(jd, border, dim.height*4.0/5.0, (dim.width-(border*2))/(BoardCAD.getInstance().getCurrentBrd().getLength()), true,BoardCAD.getInstance().getCurrentBrd(), 3.0);
 //		BezierBoardDrawUtil.printCrossSection(jd, border, dim.height*2.0/5.0, (dim.width-(border*2))/(BoardCAD.getInstance().getCurrentBrd().getLength()), true,BoardCAD.getInstance().getCurrentBrd(), 50.0, 3.0, 0.8);
 //		BezierBoardDrawUtil.printCrossSection(jd, border, dim.height*2.0/5.0, (dim.width-(border*2))/(BoardCAD.getInstance().getCurrentBrd().getLength()), true,BoardCAD.getInstance().getCurrentBrd(), 50.0);
-		BezierBoardDrawUtil.printProfile(jd, border, dim.height*2.0/5.0, (dim.width-(border*2))/(BoardCAD.getInstance().getCurrentBrd().getLength()), false,BoardCAD.getInstance().getCurrentBrd(), 0.0, 0.0, false, 0.0, 0.0);
-		BezierBoardDrawUtil.printProfile(jd, border, dim.height*2.0/5.0, (dim.width-(border*2))/(BoardCAD.getInstance().getCurrentBrd().getLength()), true,BoardCAD.getInstance().getCurrentBrd(), 5.0, 0.0, false, 0.0, 0.0);
-		BezierBoardDrawUtil.printProfile(jd, border, dim.height*2.0/5.0, (dim.width-(border*2))/(BoardCAD.getInstance().getCurrentBrd().getLength()), true,BoardCAD.getInstance().getCurrentBrd(), 20.0, 0.0, false, 0.0, 0.0);
+		BezierBoardDrawUtil.printProfile(jd, border, dim.height*2.0/5.0, (dim.width-(border*2))/(BoardCAD.getInstance().getCurrentBrd().getLength()), 0.0, false,BoardCAD.getInstance().getCurrentBrd(), 0.0, 0.0, false, 0.0, 0.0);
+		BezierBoardDrawUtil.printProfile(jd, border, dim.height*2.0/5.0, (dim.width-(border*2))/(BoardCAD.getInstance().getCurrentBrd().getLength()), 0.0, true,BoardCAD.getInstance().getCurrentBrd(), 5.0, 0.0, false, 0.0, 0.0);
+		BezierBoardDrawUtil.printProfile(jd, border, dim.height*2.0/5.0, (dim.width-(border*2))/(BoardCAD.getInstance().getCurrentBrd().getLength()), 0.0, true,BoardCAD.getInstance().getCurrentBrd(), 20.0, 0.0, false, 0.0, 0.0);
 
 }
 
@@ -368,7 +368,7 @@ public class PrintSandwichTemplates extends JComponent implements Printable {
 		
 			BezierBoardDrawUtil.printProfile(new JavaDraw(g2d),
 					-pageFormat.getImageableWidth()*(pageIndex%widthInPages),
-					-pageFormat.getImageableHeight()*(pageIndex/widthInPages), 72/2.54, true, BoardCAD.getInstance().getCurrentBrd(), mProfileOffset, mSkinThickness, mFlatten, 0.0, 0.0);
+					-pageFormat.getImageableHeight()*(pageIndex/widthInPages), 72/2.54, 0.0, true, BoardCAD.getInstance().getCurrentBrd(), mProfileOffset, mSkinThickness, mFlatten, 0.0, 0.0);
 			
 			return 0;
 		}
@@ -412,7 +412,7 @@ public class PrintSandwichTemplates extends JComponent implements Printable {
 		
 			BezierBoardDrawUtil.printRailTemplate(new JavaDraw(g2d),
 					-pageFormat.getImageableWidth()*(pageIndex%widthInPages),
-					-pageFormat.getImageableHeight()*(pageIndex/widthInPages), 72/2.54, true, BoardCAD.getInstance().getCurrentBrd(), mDistanceToRail, mSkinThickness, mTailOffset, mNoseOffset, mFlatten);
+					-pageFormat.getImageableHeight()*(pageIndex/widthInPages), 72/2.54, 0.0, true, BoardCAD.getInstance().getCurrentBrd(), mDistanceToRail, mSkinThickness, mTailOffset, mNoseOffset, mFlatten);
 			
 			return 0;
 		}
@@ -456,7 +456,7 @@ public class PrintSandwichTemplates extends JComponent implements Printable {
 		
 			BezierBoardDrawUtil.printDeckSkinTemplate(new JavaDraw(g2d),
 					-pageFormat.getImageableWidth()*(pageIndex%widthInPages),
-					-pageFormat.getImageableHeight()*(pageIndex/widthInPages), 72/2.54, true, BoardCAD.getInstance().getCurrentBrd(), mDistanceToRail);
+					-pageFormat.getImageableHeight()*(pageIndex/widthInPages), 72/2.54, 0.0, true, BoardCAD.getInstance().getCurrentBrd(), mDistanceToRail);
 			
 			return 0;
 		}
@@ -500,7 +500,7 @@ public class PrintSandwichTemplates extends JComponent implements Printable {
 		
 			BezierBoardDrawUtil.printBottomSkinTemplate(new JavaDraw(g2d),
 					-pageFormat.getImageableWidth()*(pageIndex%widthInPages),
-					-pageFormat.getImageableHeight()*(pageIndex/widthInPages), 72/2.54, true, BoardCAD.getInstance().getCurrentBrd(), mDistanceToRail);
+					-pageFormat.getImageableHeight()*(pageIndex/widthInPages), 72/2.54, 0.0, true, BoardCAD.getInstance().getCurrentBrd(), mDistanceToRail);
 			
 			return 0;
 		}
@@ -544,11 +544,11 @@ public class PrintSandwichTemplates extends JComponent implements Printable {
 		
 			BezierBoardDrawUtil.printCrossSection(new JavaDraw(g2d),
 					-pageFormat.getImageableWidth()*(pageIndex%widthInPages),
-					-pageFormat.getImageableHeight()*(pageIndex/widthInPages), 72/2.54, true, BoardCAD.getInstance().getCurrentBrd(), mCrosssectionPos, mDistanceToRail, mSkinThickness);
+					-pageFormat.getImageableHeight()*(pageIndex/widthInPages), 72/2.54, 0.0, true, BoardCAD.getInstance().getCurrentBrd(), mCrosssectionPos, mDistanceToRail, mSkinThickness);
 		
 			BezierBoardDrawUtil.printCrossSection(new JavaDraw(g2d),
 					-pageFormat.getImageableWidth()*(pageIndex%widthInPages),
-					-pageFormat.getImageableHeight()*(pageIndex/widthInPages), 72/2.54, true, BoardCAD.getInstance().getCurrentBrd(), mCrosssectionPos);
+					-pageFormat.getImageableHeight()*(pageIndex/widthInPages), 72/2.54, 0.0, true, BoardCAD.getInstance().getCurrentBrd(), mCrosssectionPos);
 
 			return 0;
 		}

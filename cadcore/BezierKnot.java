@@ -27,7 +27,7 @@ public class BezierKnot extends Object implements Cloneable
 	protected double Y_mask = 1.0f;
 	protected int mTangent1Locks = 0;
 	protected int mTangent2Locks = 0;
-	
+ 
 	List<BezierKnotChangeListener> mChangeListeners = new Vector<BezierKnotChangeListener>();
 
 	public BezierKnot(){
@@ -442,7 +442,7 @@ public class BezierKnot extends Object implements Cloneable
 			throw new Error("CloneNotSupportedException in BrdCommand");
 		}
 
-		controlPoint.setPoints(new Point2D.Double[3]);
+		controlPoint.initPoints();
 		for(int i = 0; i < 3; i++)
 		{
 			controlPoint.getPoints()[i] = (Point2D.Double)this.getPoints()[i].clone();
@@ -480,6 +480,10 @@ public class BezierKnot extends Object implements Cloneable
 		onChange();
 	}
 
+	public void initPoints() {
+		this.mPoints = new Point2D.Double[3];
+	}
+	
 	public void setPoints(Point2D.Double mPoints[]) {
 		this.mPoints = mPoints;
 		onChange();
@@ -502,7 +506,7 @@ public class BezierKnot extends Object implements Cloneable
 		mChangeListeners.add(listener);
 	}
 
-	public void onChange()
+	public void onChange()	//TODO: THIS FUNCTION SHOULD NOT BE PUBLIC, FUNCTIONS WHICH CALL onChange() SHOULD BE USED FOR SETTING KNOT VALUES
 	{
 		for(BezierKnotChangeListener listener : mChangeListeners)
 		{

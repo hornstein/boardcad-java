@@ -956,7 +956,6 @@ public class NurbsSurface implements Cloneable
 		double tx,ty,tz;
 		
 		//transform control points
-		System.out.println("Transforming surface");
 				
 		for(i=0;i<nr_of_segments;i++)
 		{

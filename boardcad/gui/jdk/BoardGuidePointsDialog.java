@@ -74,13 +74,19 @@ public class BoardGuidePointsDialog extends JDialog{
 	 * @return javax.swing.JTable	
 	 */
 	private JTable getGuidePointsTable() {
-		final JTabbedPane mTabbedPane = BoardCAD.getInstance().getmTabbedPane();
+		final JTabbedPane mTabbedPane = BoardCAD.getInstance().getTabbedPane();
 		if (mGuidePointsTable == null) {
 			mGuidePointsTable = new JTable()
 			{
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
 				/*
 				 *  Override to provide Select All editing functionality
 				 */
+				@Override
 				public boolean editCellAt(int row, int column, EventObject e)
 				{
 					boolean result = super.editCellAt(row, column, e);
@@ -131,6 +137,7 @@ public class BoardGuidePointsDialog extends JDialog{
 					{
 						SwingUtilities.invokeLater(new Runnable()
 						{
+							@Override
 							public void run()
 							{
 								((JTextComponent)editor).selectAll();
@@ -144,6 +151,7 @@ public class BoardGuidePointsDialog extends JDialog{
 // JAVA 6			GuidePointsTable.setFillsViewportHeight(true);
 			mGuidePointsTable.setModel(new AbstractTableModel() {
 				static final long serialVersionUID=1L;
+				@Override
 				public String getColumnName(int col) {
 					switch(col)
 					{
@@ -165,6 +173,7 @@ public class BoardGuidePointsDialog extends JDialog{
 						return "";
 					}
 				}
+				@Override
 				public int getRowCount() 
 				{ 
 					BoardEdit edit = BoardCAD.getInstance().getSelectedEdit();
@@ -173,6 +182,7 @@ public class BoardGuidePointsDialog extends JDialog{
 					
 					return edit.getGuidePoints().size(); 
 				}
+				@Override
 				public int getColumnCount() 
 				{
 
@@ -184,6 +194,7 @@ public class BoardGuidePointsDialog extends JDialog{
 						return 4;
 					}
 				}
+				@Override
 				public Object getValueAt(int row, int col) {
 					
 					Point2D.Double pnt = BoardCAD.getInstance().getSelectedEdit().getGuidePoints().get(row);
@@ -212,6 +223,7 @@ public class BoardGuidePointsDialog extends JDialog{
 					}
 
 				}
+				@Override
 				public boolean isCellEditable(int row, int col)
 				{   
 					switch(col)
@@ -225,6 +237,7 @@ public class BoardGuidePointsDialog extends JDialog{
 						return true;
 					}
 				}
+				@Override
 				public void setValueAt(Object value, int row, int col) {
 					BoardEdit edit = BoardCAD.getInstance().getSelectedEdit();
 					if(edit == null)
@@ -265,6 +278,7 @@ public class BoardGuidePointsDialog extends JDialog{
 //					this.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, 0));
 				};
 
+				@Override
 				public void actionPerformed(ActionEvent arg0) {
 
 					addGuidePoint();
@@ -280,6 +294,7 @@ public class BoardGuidePointsDialog extends JDialog{
 //					this.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
 				};
 
+				@Override
 				public void actionPerformed(ActionEvent arg0) {
 
 					int[] ai = mGuidePointsTable.getSelectedRows();
@@ -302,9 +317,11 @@ public class BoardGuidePointsDialog extends JDialog{
 
 			mGuidePointsTable.add(menu);
 			mGuidePointsTable.addMouseListener(new MouseAdapter() {
+				@Override
 				public void mousePressed(MouseEvent e) {
 					showPopup(e);
 				}
+				@Override
 				public void mouseReleased(MouseEvent e) {
 					showPopup(e);
 				}
@@ -317,6 +334,7 @@ public class BoardGuidePointsDialog extends JDialog{
 			
 			mScrollPane.add(menu);
 			mScrollPane.addMouseListener(new MouseAdapter() {
+				@Override
 				public void mousePressed(MouseEvent e) {
 					if (e.isPopupTrigger()) {
 						showPopup(e);
@@ -325,6 +343,7 @@ public class BoardGuidePointsDialog extends JDialog{
 						addGuidePoint();
 					}
 				}
+				@Override
 				public void mouseReleased(MouseEvent e) {
 					showPopup(e);
 				}

@@ -452,7 +452,7 @@ public class PrintBrd extends JComponent implements Printable {
 		
 						-pageFormat.getImageableWidth()*(pageIndex%widthInPages),
 		
-						-pageFormat.getImageableHeight()*(pageIndex/widthInPages), 0.0, 72/2.54, mPrintGrid ,BoardCAD.getInstance().getCurrentBrd(),BoardCAD.getInstance().isPrintingControlPoints(),BoardCAD.getInstance().isPrintingFins(), false, false);
+						-pageFormat.getImageableHeight()*(pageIndex/widthInPages), 72/2.54, 0.0, mPrintGrid ,BoardCAD.getInstance().getCurrentBrd(),BoardCAD.getInstance().isPrintingControlPoints(),BoardCAD.getInstance().isPrintingFins(), false, false);
 			}
 			else
 			{
@@ -460,7 +460,7 @@ public class PrintBrd extends JComponent implements Printable {
 						
 						-pageFormat.getImageableWidth()*(pageIndex%widthInPages),
 		
-						-pageFormat.getImageableHeight()*(pageIndex/widthInPages), 0.0, 72/2.54, mPrintGrid ,BoardCAD.getInstance().getCurrentBrd(),BoardCAD.getInstance().isPrintingControlPoints(),BoardCAD.getInstance().isPrintingFins());				
+						-pageFormat.getImageableHeight()*(pageIndex/widthInPages), 72/2.54, 0.0, mPrintGrid ,BoardCAD.getInstance().getCurrentBrd(),BoardCAD.getInstance().isPrintingControlPoints(),BoardCAD.getInstance().isPrintingFins());				
 			}
 			
 			return 0;
@@ -515,13 +515,13 @@ public class PrintBrd extends JComponent implements Printable {
 			{
 				BezierBoardDrawUtil.printSpinTemplateOverCurve(new JavaDraw(g2d),
 						-pageFormat.getImageableWidth()*(pageIndex%widthInPages),
-						-pageFormat.getImageableHeight()*(pageIndex/widthInPages), 0.0, 72/2.54, mPrintGrid,brd,BoardCAD.getInstance().isPrintingControlPoints(),BoardCAD.getInstance().isPrintingFins());
+						-pageFormat.getImageableHeight()*(pageIndex/widthInPages), 72/2.54, 0.0, mPrintGrid,brd,BoardCAD.getInstance().isPrintingControlPoints(),BoardCAD.getInstance().isPrintingFins());
 			}
 			else
 			{
 				BezierBoardDrawUtil.printSpinTemplate(new JavaDraw(g2d),
 						-pageFormat.getImageableWidth()*(pageIndex%widthInPages),
-						-pageFormat.getImageableHeight()*(pageIndex/widthInPages), 0.0, 72/2.54, mPrintGrid,brd,BoardCAD.getInstance().isPrintingControlPoints(),BoardCAD.getInstance().isPrintingFins());
+						-pageFormat.getImageableHeight()*(pageIndex/widthInPages), 72/2.54, 0.0, mPrintGrid,brd,BoardCAD.getInstance().isPrintingControlPoints(),BoardCAD.getInstance().isPrintingFins());
 			}
 			
 			return 0;
@@ -569,7 +569,7 @@ public class PrintBrd extends JComponent implements Printable {
 		
 					-pageFormat.getImageableWidth()*(pageIndex%widthInPages),
 		
-					-pageFormat.getImageableHeight()*(pageIndex/widthInPages), 72/2.54, true, BoardCAD.getInstance().getCurrentBrd(),BoardCAD.getInstance().isPrintingControlPoints());
+					-pageFormat.getImageableHeight()*(pageIndex/widthInPages), 72/2.54, 0.0, true, BoardCAD.getInstance().getCurrentBrd(),BoardCAD.getInstance().isPrintingControlPoints());
 			
 			return 0;
 		}
@@ -619,7 +619,7 @@ public class PrintBrd extends JComponent implements Printable {
 		
 					-pageFormat.getImageableWidth()*(pageIndex%widthPrSliceInPages),
 		
-					-BoardCAD.getInstance().getCurrentBrd().getCrossSections().get((pageIndex/widthPrSliceInPages + 1)).getBezierSpline().getMinY()*(72/2.54), 72/2.54, true, BoardCAD.getInstance().getCurrentBrd(),
+					-BoardCAD.getInstance().getCurrentBrd().getCrossSections().get((pageIndex/widthPrSliceInPages + 1)).getBezierSpline().getMinY()*(72/2.54), 72/2.54, 0.0, true, BoardCAD.getInstance().getCurrentBrd(),
 					pageIndex/widthPrSliceInPages + 1,BoardCAD.getInstance().isPrintingControlPoints());
 			
 			return 0;
@@ -698,7 +698,7 @@ public class PrintBrd extends JComponent implements Printable {
 		Line2D.Double line = new Line2D.Double();
 		
 		JavaDraw jd = new JavaDraw(g2d);
-		AffineTransform savedTransform = BezierBoardDrawUtil.setTransform(jd, xm+5, currentY, scale);	
+		AffineTransform savedTransform = BezierBoardDrawUtil.setTransform(jd, xm+5, currentY, scale, 0.0);	
 		
 		g2d.setStroke(linestroke);
 		g2d.setColor(Color.GRAY);
@@ -733,8 +733,8 @@ public class PrintBrd extends JComponent implements Printable {
 		g2d.setTransform(savedTransform);
 		
 		Stroke stroke = new BasicStroke((float)(1.5/scale));
-		BezierBoardDrawUtil.paintBezierSpline(jd, xm+5,	currentY, scale, Color.BLACK, stroke, brd.getOutline(), BezierBoardDrawUtil.MirrorY, false);
-		BezierBoardDrawUtil.paintFins(jd, xm+5,	currentY, scale, Color.BLACK, stroke, brd.getFins(), false,false);
+		BezierBoardDrawUtil.paintBezierSpline(jd, xm+5,	currentY, scale, 0.0, Color.BLACK, stroke, brd.getOutline(), BezierBoardDrawUtil.MirrorY, false);
+		BezierBoardDrawUtil.paintFins(jd, xm+5,	currentY, scale, 0.0, Color.BLACK, stroke, brd.getFins(), false,false);
 		
 		currentY += (brd.getCenterWidth()/2)*scale + hgt + 5;
 		
@@ -762,7 +762,7 @@ public class PrintBrd extends JComponent implements Printable {
 		
 		currentY += brd.getMaxRocker()*scale +10;
 		
-		savedTransform = BezierBoardDrawUtil.setTransform(jd, xm+5, currentY, scale);	
+		savedTransform = BezierBoardDrawUtil.setTransform(jd, xm+5, currentY, scale, 0.0);	
 		
 		g2d.setStroke(linestroke);
 		line.setLine(tailpos, -(tailThickness+tail1Rocker), tailpos, -tail1Rocker);
@@ -784,8 +784,8 @@ public class PrintBrd extends JComponent implements Printable {
 		
 		g2d.setTransform(savedTransform);
 		
-		BezierBoardDrawUtil.paintBezierSpline(jd, xm+5,	currentY, scale, Color.BLACK, stroke, brd.getDeck(), BezierBoardDrawUtil.FlipY, false);
-		BezierBoardDrawUtil.paintBezierSpline(jd, xm+5,	currentY, scale, Color.BLACK, stroke, brd.getBottom(), BezierBoardDrawUtil.FlipY, false);
+		BezierBoardDrawUtil.paintBezierSpline(jd, xm+5,	currentY, scale, 0.0, Color.BLACK, stroke, brd.getDeck(), BezierBoardDrawUtil.FlipY, false);
+		BezierBoardDrawUtil.paintBezierSpline(jd, xm+5,	currentY, scale, 0.0, Color.BLACK, stroke, brd.getBottom(), BezierBoardDrawUtil.FlipY, false);
 		
 		currentY += hgt + 5;
 		
@@ -824,7 +824,7 @@ public class PrintBrd extends JComponent implements Printable {
 		
 		currentY += brd.getThickness()*scale + 5;
 		
-		BezierBoardDrawUtil.paintSlidingCrossSection(jd, xm+5+width/2,	currentY, 0.0, scale, Color.BLACK, linestroke, false, true, brd.getLength()/2, brd);
+		BezierBoardDrawUtil.paintSlidingCrossSection(jd, xm+5+width/2,	currentY, scale, 0.0, Color.BLACK, linestroke, false, true, brd.getLength()/2, brd);
 		
 		currentY += hgt;
 		
@@ -834,9 +834,9 @@ public class PrintBrd extends JComponent implements Printable {
 		
 		currentY += hgt+10;
 		
-		BezierBoardDrawUtil.paintSlidingCrossSection(jd, xm+5+((width/3)*1),	currentY, 0.0, scale, Color.BLACK, linestroke, false, true, UnitUtils.INCHES_PR_FOOT*UnitUtils.INCH, brd);
+		BezierBoardDrawUtil.paintSlidingCrossSection(jd, xm+5+((width/3)*1),	currentY, scale, 0.0, Color.BLACK, linestroke, false, true, UnitUtils.INCHES_PR_FOOT*UnitUtils.INCH, brd);
 		
-		BezierBoardDrawUtil.paintSlidingCrossSection(jd, xm+5+((width/3)*2),	currentY, 0.0, scale, Color.BLACK, linestroke, false, true, brd.getLength() - UnitUtils.INCHES_PR_FOOT*UnitUtils.INCH, brd);
+		BezierBoardDrawUtil.paintSlidingCrossSection(jd, xm+5+((width/3)*2),	currentY, scale, 0.0, Color.BLACK, linestroke, false, true, brd.getLength() - UnitUtils.INCHES_PR_FOOT*UnitUtils.INCH, brd);
 		
 		currentY += hgt;
 		String tailString = LanguageResource.getString("TAIL_STR");
@@ -985,7 +985,7 @@ int printDetailedSpecSheet(PageFormat pageFormat, int pageIndex, Graphics g)
 	Line2D.Double line = new Line2D.Double();
 	
 	JavaDraw jd = new JavaDraw(g2d);
-	AffineTransform savedTransform = BezierBoardDrawUtil.setTransform(jd, xm+5, currentY, scale);	
+	AffineTransform savedTransform = BezierBoardDrawUtil.setTransform(jd, xm+5, currentY, scale, 0.0);	
 	
 	//Outline Crossection lines
 	g2d.setStroke(linestroke);
@@ -1021,8 +1021,8 @@ int printDetailedSpecSheet(PageFormat pageFormat, int pageIndex, Graphics g)
 	g2d.setTransform(savedTransform);
 	
 	Stroke stroke = new BasicStroke((float)(1.5/scale));
-	BezierBoardDrawUtil.paintBezierSpline(jd, xm+5,	currentY, scale, Color.BLACK, stroke, brd.getOutline(), BezierBoardDrawUtil.MirrorY, false);
-	BezierBoardDrawUtil.paintFins(jd, xm+5,	currentY, scale, Color.BLACK, stroke, brd.getFins(), false,false);
+	BezierBoardDrawUtil.paintBezierSpline(jd, xm+5,	currentY, scale, 0.0, Color.BLACK, stroke, brd.getOutline(), BezierBoardDrawUtil.MirrorY, false);
+	BezierBoardDrawUtil.paintFins(jd, xm+5,	currentY, scale, 0.0, Color.BLACK, stroke, brd.getFins(), false, false);
 	
 	currentY += (brd.getCenterWidth()/2)*scale + hgt + 5;
 	
@@ -1068,7 +1068,7 @@ int printDetailedSpecSheet(PageFormat pageFormat, int pageIndex, Graphics g)
 	
 	currentY += brd.getMaxRocker()*scale +10;
 	
-	savedTransform = BezierBoardDrawUtil.setTransform(jd, xm+5, currentY, scale);	
+	savedTransform = BezierBoardDrawUtil.setTransform(jd, xm+5, currentY, scale, 0.0);	
 	
 	//Draw lines from numbers
 	g2d.setStroke(linestroke);
@@ -1091,8 +1091,8 @@ int printDetailedSpecSheet(PageFormat pageFormat, int pageIndex, Graphics g)
 	
 	g2d.setTransform(savedTransform);
 	
-	BezierBoardDrawUtil.paintBezierSpline(jd, xm+5,	currentY, scale, Color.BLACK, stroke, brd.getDeck(), BezierBoardDrawUtil.FlipY, false);
-	BezierBoardDrawUtil.paintBezierSpline(jd, xm+5,	currentY, scale, Color.BLACK, stroke, brd.getBottom(), BezierBoardDrawUtil.FlipY, false);
+	BezierBoardDrawUtil.paintBezierSpline(jd, xm+5,	currentY, scale, 0.0, Color.BLACK, stroke, brd.getDeck(), BezierBoardDrawUtil.FlipY, false);
+	BezierBoardDrawUtil.paintBezierSpline(jd, xm+5,	currentY, scale, 0.0, Color.BLACK, stroke, brd.getBottom(), BezierBoardDrawUtil.FlipY, false);
 	
 	currentY += hgt + 5;
 	
@@ -1133,7 +1133,7 @@ int printDetailedSpecSheet(PageFormat pageFormat, int pageIndex, Graphics g)
 	
 	currentY += brd.getThickness()*scale + 5;
 	
-	BezierBoardDrawUtil.paintSlidingCrossSection(jd, xm+5+width/2,	currentY, Math.PI/2.0, scale, Color.BLACK, linestroke, false, true, brd.getLength()/2, brd);
+	BezierBoardDrawUtil.paintSlidingCrossSection(jd, xm+5+width/2,	currentY, scale, Math.PI/2.0, Color.BLACK, linestroke, false, true, brd.getLength()/2, brd);
 	
 	currentY += hgt;
 	
@@ -1144,9 +1144,9 @@ int printDetailedSpecSheet(PageFormat pageFormat, int pageIndex, Graphics g)
 	currentY += hgt+10;
 	
 	//Draw
-	BezierBoardDrawUtil.paintSlidingCrossSection(jd, xm+5+((width/3)*1),	currentY, Math.PI/2.0, scale, Color.BLACK, linestroke, false, true, UnitUtils.INCHES_PR_FOOT*UnitUtils.INCH, brd);
+	BezierBoardDrawUtil.paintSlidingCrossSection(jd, xm+5+((width/3)*1),	currentY, scale, Math.PI/2.0, Color.BLACK, linestroke, false, true, UnitUtils.INCHES_PR_FOOT*UnitUtils.INCH, brd);
 	
-	BezierBoardDrawUtil.paintSlidingCrossSection(jd, xm+5+((width/3)*2),	currentY, Math.PI/2.0, scale, Color.BLACK, linestroke, false, true, brd.getLength() - UnitUtils.INCHES_PR_FOOT*UnitUtils.INCH, brd);
+	BezierBoardDrawUtil.paintSlidingCrossSection(jd, xm+5+((width/3)*2),	currentY, scale, Math.PI/2.0, Color.BLACK, linestroke, false, true, brd.getLength() - UnitUtils.INCHES_PR_FOOT*UnitUtils.INCH, brd);
 	
 	currentY += hgt;
 	String tailString = LanguageResource.getString("TAIL_STR");

@@ -53,14 +53,14 @@ public final class BoardPreview extends JComponent implements PropertyChangeList
                 else if (extension.equals("s3d")) {
                 	mBrd = new BezierBoard();
                     S3dReader.loadFile(mBrd, mFile.getAbsolutePath());
+                }  
+                else if (extension.equals("s3dx")) {
+                	mBrd = new BezierBoard();
+                    S3dxReader.loadFile(mBrd, mFile.getAbsolutePath());
                 } 
- 
-		else if (extension.equals("stp") || (extension.equals("step"))) {
-
-   	            	mBrd = new BezierBoard();
-			StepReader.loadPreview(mBrd, mFile.getAbsolutePath());
-
-		}
+				else if (extension.equals("stp") || (extension.equals("step"))) {
+					StepReader.loadPreview(mBrd, mFile.getAbsolutePath());
+				}
                 else if (extension.equals("cad")){
                 	//TODO: implement
                 }            
@@ -68,7 +68,8 @@ public final class BoardPreview extends JComponent implements PropertyChangeList
             
         }
 
-        public void propertyChange(PropertyChangeEvent e)
+        @Override
+		public void propertyChange(PropertyChangeEvent e)
         {
             boolean update = false;
             String prop = e.getPropertyName();
@@ -93,7 +94,8 @@ public final class BoardPreview extends JComponent implements PropertyChangeList
             }
         }
 
-        protected void paintComponent(Graphics gr) 
+        @Override
+		protected void paintComponent(Graphics gr) 
         {
         	Graphics2D g = (Graphics2D)gr;
     		FontMetrics fontMetrics = g.getFontMetrics(mFont);
@@ -117,7 +119,7 @@ public final class BoardPreview extends JComponent implements PropertyChangeList
     		double upperFrameHeight = height - lowerFrameHeight - frameMargins;
     		
     		g.setColor(Color.GRAY);
-    		g.drawRect((int)frameMargins, (int)0, (int)(width-frameMargins-1), (int)upperFrameHeight);    		
+    		g.drawRect((int)frameMargins, 0, (int)(width-frameMargins-1), (int)upperFrameHeight);    		
     		g.drawRect((int)frameMargins, (int)(upperFrameHeight + frameMargins), (int)(width-frameMargins-1), (int)lowerFrameHeight-1);
     		
 
@@ -137,8 +139,8 @@ public final class BoardPreview extends JComponent implements PropertyChangeList
         		
         		double outlineDrawPos = width/2 - (mBrd.getThickness()*scale + 5.0*scale)/2;
         		
-        		BezierBoardDrawUtil.paintBezierSplines(jd, outlineDrawPos, upperFrameHeight-bottomMargin, scale, Color.BLACK, stroke, new BezierSpline[]{mBrd.getOutline()}, BezierBoardDrawUtil.Vertical | BezierBoardDrawUtil.FlipY | BezierBoardDrawUtil.MirrorX, true);	  		
-        		BezierBoardDrawUtil.paintBezierSplines(jd, outlineDrawPos +  mBrd.getMaxWidth()*scale/2+ mBrd.getThickness()*scale + 5.0*scale, upperFrameHeight-bottomMargin, scale , Color.BLACK, stroke, new BezierSpline[]{mBrd.getDeck(), mBrd.getBottom()}, BezierBoardDrawUtil.Vertical | BezierBoardDrawUtil.FlipX | BezierBoardDrawUtil.FlipY, true);	  		
+        		BezierBoardDrawUtil.paintBezierSplines(jd, outlineDrawPos, upperFrameHeight-bottomMargin, scale, 0.0, Color.BLACK, stroke, new BezierSpline[]{mBrd.getOutline()}, BezierBoardDrawUtil.Vertical | BezierBoardDrawUtil.FlipY | BezierBoardDrawUtil.MirrorX, true);	  		
+        		BezierBoardDrawUtil.paintBezierSplines(jd, outlineDrawPos +  mBrd.getMaxWidth()*scale/2+ mBrd.getThickness()*scale + 5.0*scale, 0.0, upperFrameHeight-bottomMargin, scale , Color.BLACK, stroke, new BezierSpline[]{mBrd.getDeck(), mBrd.getBottom()}, BezierBoardDrawUtil.Vertical | BezierBoardDrawUtil.FlipX | BezierBoardDrawUtil.FlipY, true);	  		
 
             	//Text
         		double strLength = fontMetrics.stringWidth(mFile.getName());

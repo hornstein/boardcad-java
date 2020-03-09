@@ -105,6 +105,7 @@ public class TwoValuesInputDialog extends JDialog {
 			OkButton.setBounds(new Rectangle(21, 139, 106, 25));
 			OkButton.setText(LanguageResource.getString("OKBUTTON_STR") );
 			OkButton.addActionListener(new java.awt.event.ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					setVisible(false);
 					mWasCancelled = false;
@@ -125,6 +126,7 @@ public class TwoValuesInputDialog extends JDialog {
 			CancelButton.setBounds(new Rectangle(135, 139, 106, 25));
 			CancelButton.setText(LanguageResource.getString("CANCELBUTTON_STR") );
 			CancelButton.addActionListener(new java.awt.event.ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					setVisible(false);
 				}
@@ -208,7 +210,7 @@ public class TwoValuesInputDialog extends JDialog {
 		case DOUBLE:
 			return Double.parseDouble(val);
 		case INTEGER:
-			return (double)Integer.parseInt(val);
+			return Integer.parseInt(val);
 		}
 	}
 
@@ -224,7 +226,7 @@ public class TwoValuesInputDialog extends JDialog {
 		case DOUBLE:
 			return Double.parseDouble(val);
 		case INTEGER:
-			return (double)Integer.parseInt(val);
+			return Integer.parseInt(val);
 		}
 	}
 

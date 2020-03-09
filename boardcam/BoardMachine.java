@@ -62,7 +62,6 @@ public class BoardMachine
 	public static String scan_path;
 	public static NurbsPoint axis4_offset;
 	public static double axis4_offsetRotation;
-	public static double axis5_offsetRotation;
 	public static double axis4_rail_start;
 	public static double axis4_rail_stop;
 
@@ -219,13 +218,11 @@ public class BoardMachine
 			// 4-axis settings
 			setting = "4 axis";
 
-			axis4_offset=new NurbsPoint(Double.parseDouble(properties.getProperty("machine.offsetX")),
-						Double.parseDouble(properties.getProperty("machine.offsetY")),
-						Double.parseDouble(properties.getProperty("machine.offsetZ")));
+			axis4_offset=new NurbsPoint(Double.parseDouble(properties.getProperty("machine.axis4.offsetX")),
+						Double.parseDouble(properties.getProperty("machine.axis4.offsetY")),
+						Double.parseDouble(properties.getProperty("machine.axis4.offsetZ")));
 
-			axis4_offsetRotation = Double.parseDouble(properties.getProperty("machine.offsetRotation4"));
-
-			axis5_offsetRotation = Double.parseDouble(properties.getProperty("machine.offsetRotation5"));
+			axis4_offsetRotation = Double.parseDouble(properties.getProperty("machine.axis4.offsetRotation"));
 			
 			
 //			setting = "collision test";
@@ -273,8 +270,7 @@ public class BoardMachine
 		return array;
 
 	}
-	
-	/**
+		/**
 	 * Transform point from machine coordinates to BoardCAD coordinates
 	 * 
 	 * @param p

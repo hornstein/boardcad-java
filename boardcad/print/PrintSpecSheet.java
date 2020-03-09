@@ -192,18 +192,18 @@ public class PrintSpecSheet extends JComponent implements Printable {
 		format.setPaper(paper);
 //		printDetailedSpecSheet(format, 0, g2d);
 		printNewSpecSheet(format, 0, g2d);
-//		BezierBoardDrawUtil.printOutline(jd, border, dim.height*1.0/5.0, 0.0, (dim.mImagableWidth-(border*2))/(BoardCAD.getInstance().getCurrentBrd().getLength()), true, BoardCAD.getInstance().getCurrentBrd(), false, false);
-//		BezierBoardDrawUtil.printOutlineOverCurve(jd, border, dim.height*1.0/5.0, 0.0, (dim.mImagableWidth-(border*2))/(BoardCAD.getInstance().getCurrentBrd().getLength()), true, BoardCAD.getInstance().getCurrentBrd(), false, false, false, false);
+//		BezierBoardDrawUtil.printOutline(jd, border, dim.height*1.0/5.0, (dim.mImagableWidth-(border*2))/(BoardCAD.getInstance().getCurrentBrd().getLength()),0.0,  true, BoardCAD.getInstance().getCurrentBrd(), false, false);
+//		BezierBoardDrawUtil.printOutlineOverCurve(jd, border, dim.height*1.0/5.0, (dim.mImagableWidth-(border*2))/(BoardCAD.getInstance().getCurrentBrd().getLength()), 0.0, true, BoardCAD.getInstance().getCurrentBrd(), false, false, false, false);
 
-//		BezierBoardDrawUtil.printSpinTemplate(jd, border, dim.height*2.0/5.0, 0.0, (dim.mImagableWidth-(border*2))/(BoardCAD.getInstance().getCurrentBrd().getLength()), true, BoardCAD.getInstance().getCurrentBrd(), false, false);
-//		BezierBoardDrawUtil.printSpinTemplateOverCurve(jd, border, dim.height*2.0/5.0, 0.0, (dim.mImagableWidth-(border*2))/(BoardCAD.getInstance().getCurrentBrd().getLength()), true, BoardCAD.getInstance().getCurrentBrd(), false, false);
+//		BezierBoardDrawUtil.printSpinTemplate(jd, border, dim.height*2.0/5.0,  (dim.mImagableWidth-(border*2))/(BoardCAD.getInstance().getCurrentBrd().getLength()), 0.0, true, BoardCAD.getInstance().getCurrentBrd(), false, false);
+//		BezierBoardDrawUtil.printSpinTemplateOverCurve(jd, border, dim.height*2.0/5.0, (dim.mImagableWidth-(border*2))/(BoardCAD.getInstance().getCurrentBrd().getLength()),0.0,  true, BoardCAD.getInstance().getCurrentBrd(), false, false);
 		/*	
-		BezierBoardDrawUtil.printProfile(jd, border, dim.height*3.0/5.0, (dim.mImagableWidth-(border*2))/(BoardCAD.getInstance().getCurrentBrd().getLength()), true,BoardCAD.getInstance().getCurrentBrd(),false);
-		BezierBoardDrawUtil.printRailTemplate(jd, border, dim.height*3.0/5.0, (dim.mImagableWidth-(border*2))/(BoardCAD.getInstance().getCurrentBrd().getLength()), true,BoardCAD.getInstance().getCurrentBrd(), 3.0);
+		BezierBoardDrawUtil.printProfile(jd, border, dim.height*3.0/5.0, (dim.mImagableWidth-(border*2))/(BoardCAD.getInstance().getCurrentBrd().getLength()),0.0,  true,BoardCAD.getInstance().getCurrentBrd(),false);
+		BezierBoardDrawUtil.printRailTemplate(jd, border, dim.height*3.0/5.0, (dim.mImagableWidth-(border*2))/(BoardCAD.getInstance().getCurrentBrd().getLength()),0.0,  true,BoardCAD.getInstance().getCurrentBrd(), 3.0);
 
 		for(int i = 1; i < BoardCAD.getInstance().getCurrentBrd().getCrossSections().size()-1; i++)
 		{
-			BezierBoardDrawUtil.printSlice(jd, border, dim.height*4.0/5.0, (dim.mImagableWidth-(border*2))/(BoardCAD.getInstance().getCurrentBrd().getLength()), true,BoardCAD.getInstance().getCurrentBrd(), i,false);
+			BezierBoardDrawUtil.printSlice(jd, border, dim.height*4.0/5.0, (dim.mImagableWidth-(border*2))/(BoardCAD.getInstance().getCurrentBrd().getLength()),0.0,  true,BoardCAD.getInstance().getCurrentBrd(), i,false);
 		}
 
 		final BezierSpline p = BoardCAD.getInstance().getCurrentBrd().getInterpolatedCrossSection(BoardCAD.getInstance().getCurrentBrd().getLength()/2.0).getBezierSpline();
@@ -212,7 +212,7 @@ public class PrintSpecSheet extends JComponent implements Printable {
 
 	    double mScale = (dim.mImagableWidth-(border*2))/(BoardCAD.getInstance().getCurrentBrd().getLength());
 
-		BezierBoardDrawUtil.paintFunction(jd, border, dim.height/2.0, mScale, new Color(0,0,0), new BasicStroke((float)(2.0/mScale)), func, 0.0, 1.0, 200.0, 10.0);
+		BezierBoardDrawUtil.paintFunction(jd, border, dim.height/2.0, mScale,0.0,  new Color(0,0,0), new BasicStroke((float)(2.0/mScale)), func, 0.0, 1.0, 200.0, 10.0);
 		 */		
 	}
 
@@ -315,7 +315,7 @@ public class PrintSpecSheet extends JComponent implements Printable {
 		Line2D.Double line = new Line2D.Double();
 
 		JavaDraw jd = new JavaDraw(g2d);
-		AffineTransform savedTransform = BezierBoardDrawUtil.setTransform(jd, xm+5, currentY, mScale);	
+		AffineTransform savedTransform = BezierBoardDrawUtil.setTransform(jd, xm+5, currentY, mScale, 0.0);	
 
 		g2d.setStroke(linestroke);
 		g2d.setColor(Color.GRAY);
@@ -350,8 +350,8 @@ public class PrintSpecSheet extends JComponent implements Printable {
 		g2d.setTransform(savedTransform);
 
 		Stroke stroke = new BasicStroke((float)(1.5/mScale));
-		BezierBoardDrawUtil.paintBezierSpline(jd, xm+5,	currentY, mScale, Color.BLACK, stroke, mBrd.getOutline(), BezierBoardDrawUtil.MirrorY, false);
-		BezierBoardDrawUtil.paintFins(jd, xm+5,	currentY, mScale, Color.BLACK, stroke, mBrd.getFins(), false,false);
+		BezierBoardDrawUtil.paintBezierSpline(jd, xm+5,	currentY, mScale, 0.0, Color.BLACK, stroke, mBrd.getOutline(), BezierBoardDrawUtil.MirrorY, false);
+		BezierBoardDrawUtil.paintFins(jd, xm+5,	currentY, mScale, 0.0, Color.BLACK, stroke, mBrd.getFins(), false,false);
 
 		currentY += (mBrd.getCenterWidth()/2)*mScale + hgt + 5;
 
@@ -379,7 +379,7 @@ public class PrintSpecSheet extends JComponent implements Printable {
 
 		currentY += mBrd.getMaxRocker()*mScale +10;
 
-		savedTransform = BezierBoardDrawUtil.setTransform(jd, xm+5, currentY, mScale);	
+		savedTransform = BezierBoardDrawUtil.setTransform(jd, xm+5, currentY, mScale, 0.0);	
 
 		g2d.setStroke(linestroke);
 		line.setLine(tailpos, -(tailThickness+tail1Rocker), tailpos, -tail1Rocker);
@@ -401,8 +401,8 @@ public class PrintSpecSheet extends JComponent implements Printable {
 
 		g2d.setTransform(savedTransform);
 
-		BezierBoardDrawUtil.paintBezierSpline(jd, xm+5,	currentY, mScale, Color.BLACK, stroke, mBrd.getDeck(), BezierBoardDrawUtil.FlipY, false);
-		BezierBoardDrawUtil.paintBezierSpline(jd, xm+5,	currentY, mScale, Color.BLACK, stroke, mBrd.getBottom(), BezierBoardDrawUtil.FlipY, false);
+		BezierBoardDrawUtil.paintBezierSpline(jd, xm+5,	currentY, mScale, 0.0, Color.BLACK, stroke, mBrd.getDeck(), BezierBoardDrawUtil.FlipY, false);
+		BezierBoardDrawUtil.paintBezierSpline(jd, xm+5,	currentY, mScale, 0.0, Color.BLACK, stroke, mBrd.getBottom(), BezierBoardDrawUtil.FlipY, false);
 
 		currentY += hgt + 5;
 
@@ -441,7 +441,7 @@ public class PrintSpecSheet extends JComponent implements Printable {
 
 		currentY += mBrd.getThickness()*mScale + 5;
 
-		BezierBoardDrawUtil.paintSlidingCrossSection(jd, xm+5+mImagableWidth/2,	currentY, 0.0, mScale, Color.BLACK, linestroke, false, true, mBrd.getLength()/2, mBrd);
+		BezierBoardDrawUtil.paintSlidingCrossSection(jd, xm+5+mImagableWidth/2,	currentY, mScale, 0.0, Color.BLACK, linestroke, false, true, mBrd.getLength()/2, mBrd);
 
 		currentY += hgt;
 
@@ -451,9 +451,9 @@ public class PrintSpecSheet extends JComponent implements Printable {
 
 		currentY += hgt+10;
 
-		BezierBoardDrawUtil.paintSlidingCrossSection(jd, xm+5+((mImagableWidth/3)*1),	currentY, 0.0, mScale, Color.BLACK, linestroke, false, true, UnitUtils.INCHES_PR_FOOT*UnitUtils.INCH, mBrd);
+		BezierBoardDrawUtil.paintSlidingCrossSection(jd, xm+5+((mImagableWidth/3)*1),	currentY, mScale, 0.0, Color.BLACK, linestroke, false, true, UnitUtils.INCHES_PR_FOOT*UnitUtils.INCH, mBrd);
 
-		BezierBoardDrawUtil.paintSlidingCrossSection(jd, xm+5+((mImagableWidth/3)*2),	currentY, 0.0, mScale, Color.BLACK, linestroke, false, true, mBrd.getLength() - UnitUtils.INCHES_PR_FOOT*UnitUtils.INCH, mBrd);
+		BezierBoardDrawUtil.paintSlidingCrossSection(jd, xm+5+((mImagableWidth/3)*2),	currentY, mScale, 0.0, Color.BLACK, linestroke, false, true, mBrd.getLength() - UnitUtils.INCHES_PR_FOOT*UnitUtils.INCH, mBrd);
 
 		currentY += hgt;
 		String tailString = LanguageResource.getString("TAIL_STR");
@@ -602,7 +602,7 @@ public class PrintSpecSheet extends JComponent implements Printable {
 		Line2D.Double line = new Line2D.Double();
 
 		JavaDraw jd = new JavaDraw(g2d);
-		AffineTransform savedTransform = BezierBoardDrawUtil.setTransform(jd, xm+5, currentY, mScale);	
+		AffineTransform savedTransform = BezierBoardDrawUtil.setTransform(jd, xm+5, currentY, mScale, 0.0);	
 
 		//Outline Crossection lines
 		g2d.setStroke(linestroke);
@@ -638,8 +638,8 @@ public class PrintSpecSheet extends JComponent implements Printable {
 		g2d.setTransform(savedTransform);
 
 		Stroke stroke = new BasicStroke((float)(1.5/mScale));
-		BezierBoardDrawUtil.paintBezierSpline(jd, xm+5,	currentY, mScale, Color.BLACK, stroke, mBrd.getOutline(), BezierBoardDrawUtil.MirrorY, false);
-		BezierBoardDrawUtil.paintFins(jd, xm+5,	currentY, mScale, Color.BLACK, stroke, mBrd.getFins(), false,false);
+		BezierBoardDrawUtil.paintBezierSpline(jd, xm+5,	currentY, mScale, 0.0, Color.BLACK, stroke, mBrd.getOutline(), BezierBoardDrawUtil.MirrorY, false);
+		BezierBoardDrawUtil.paintFins(jd, xm+5,	currentY, mScale, 0.0, Color.BLACK, stroke, mBrd.getFins(), false,false);
 
 		currentY += (mBrd.getCenterWidth()/2)*mScale + hgt + 5;
 
@@ -685,7 +685,7 @@ public class PrintSpecSheet extends JComponent implements Printable {
 
 		currentY += mBrd.getMaxRocker()*mScale +10;
 
-		savedTransform = BezierBoardDrawUtil.setTransform(jd, xm+5, currentY, mScale);	
+		savedTransform = BezierBoardDrawUtil.setTransform(jd, xm+5, currentY, mScale, 0.0);	
 
 		//Draw lines from numbers
 		g2d.setStroke(linestroke);
@@ -708,8 +708,8 @@ public class PrintSpecSheet extends JComponent implements Printable {
 
 		g2d.setTransform(savedTransform);
 
-		BezierBoardDrawUtil.paintBezierSpline(jd, xm+5,	currentY, mScale, Color.BLACK, stroke, mBrd.getDeck(), BezierBoardDrawUtil.FlipY, false);
-		BezierBoardDrawUtil.paintBezierSpline(jd, xm+5,	currentY, mScale, Color.BLACK, stroke, mBrd.getBottom(), BezierBoardDrawUtil.FlipY, false);
+		BezierBoardDrawUtil.paintBezierSpline(jd, xm+5,	currentY, mScale, 0.0, Color.BLACK, stroke, mBrd.getDeck(), BezierBoardDrawUtil.FlipY, false);
+		BezierBoardDrawUtil.paintBezierSpline(jd, xm+5,	currentY, mScale, 0.0, Color.BLACK, stroke, mBrd.getBottom(), BezierBoardDrawUtil.FlipY, false);
 
 		currentY += hgt + 5;
 
@@ -761,9 +761,9 @@ public class PrintSpecSheet extends JComponent implements Printable {
 		currentY += hgt+10;
 
 		//Draw
-		BezierBoardDrawUtil.paintSlidingCrossSection(jd, xm+5+((mImagableWidth/3)*1),	currentY, Math.PI/2.0, mScale, Color.BLACK, linestroke, false, true, UnitUtils.INCHES_PR_FOOT*UnitUtils.INCH, brd);
+		BezierBoardDrawUtil.paintSlidingCrossSection(jd, xm+5+((mImagableWidth/3)*1),	currentY, mScale, Math.PI/2.0, Color.BLACK, linestroke, false, true, UnitUtils.INCHES_PR_FOOT*UnitUtils.INCH, brd);
 
-		BezierBoardDrawUtil.paintSlidingCrossSection(jd, xm+5+((mImagableWidth/3)*2),	currentY, Math.PI/2.0, mScale, Color.BLACK, linestroke, false, true, mBrd.getLength() - UnitUtils.INCHES_PR_FOOT*UnitUtils.INCH, brd);
+		BezierBoardDrawUtil.paintSlidingCrossSection(jd, xm+5+((mImagableWidth/3)*2),	currentY, mScale, Math.PI/2.0, Color.BLACK, linestroke, false, true, mBrd.getLength() - UnitUtils.INCHES_PR_FOOT*UnitUtils.INCH, brd);
 
 		currentY += hgt;
 		String tailString = LanguageResource.getString("TAIL_STR");
@@ -903,8 +903,8 @@ public class PrintSpecSheet extends JComponent implements Printable {
 
 		//Outline
 		Stroke stroke = new BasicStroke((float)(1.5/mScale));
-		BezierBoardDrawUtil.paintBezierSpline(jd, mImagableX+5,	currentY, mScale, Color.BLACK, stroke, mBrd.getOutline(), BezierBoardDrawUtil.MirrorY, false);
-		BezierBoardDrawUtil.paintFins(jd, mImagableX+5,	currentY, mScale, Color.BLACK, stroke, mBrd.getFins(), false, false);
+		BezierBoardDrawUtil.paintBezierSpline(jd, mImagableX+5,	currentY, mScale, 0.0, Color.BLACK, stroke, mBrd.getOutline(), BezierBoardDrawUtil.MirrorY, false);
+		BezierBoardDrawUtil.paintFins(jd, mImagableX+5,	currentY, mScale, 0.0, Color.BLACK, stroke, mBrd.getFins(), false, false);
 
 		//Stringer
 		Line2D.Double line = new Line2D.Double();
@@ -914,8 +914,8 @@ public class PrintSpecSheet extends JComponent implements Printable {
 		currentY += (mBrd.getCenterWidth()/2)*mScale + mBrd.getMaxRocker()*mScale;
 		
 		//Profile
-		BezierBoardDrawUtil.paintBezierSpline(jd, mImagableX+5,	currentY, mScale, Color.BLACK, stroke, mBrd.getDeck(), BezierBoardDrawUtil.FlipY, false);
-		BezierBoardDrawUtil.paintBezierSpline(jd, mImagableX+5,	currentY, mScale, Color.BLACK, stroke, mBrd.getBottom(), BezierBoardDrawUtil.FlipY, false);
+		BezierBoardDrawUtil.paintBezierSpline(jd, mImagableX+5,	currentY, mScale, 0.0, Color.BLACK, stroke, mBrd.getDeck(), BezierBoardDrawUtil.FlipY, false);
+		BezierBoardDrawUtil.paintBezierSpline(jd, mImagableX+5,	currentY, mScale, 0.0, Color.BLACK, stroke, mBrd.getBottom(), BezierBoardDrawUtil.FlipY, false);
 
 		return currentY;
 	}
@@ -1060,7 +1060,7 @@ public class PrintSpecSheet extends JComponent implements Printable {
 
 		Stroke linestroke = new BasicStroke((float)(1.5/mScale));
 		
-		BezierBoardDrawUtil.paintSlidingCrossSection(jd, mImagableX+5+mImagableWidth/2,	currentY, 0, mScale, Color.BLACK, linestroke, false, true, mBrd.getLength()/2, mBrd);
+		BezierBoardDrawUtil.paintSlidingCrossSection(jd, mImagableX+5+mImagableWidth/2,	currentY,  mScale, 0, Color.BLACK, linestroke, false, true, mBrd.getLength()/2, mBrd);
 		
 		g2d.setFont(mPrintFontNormal);
 
@@ -1073,9 +1073,9 @@ public class PrintSpecSheet extends JComponent implements Printable {
 		currentY += mBrd.getMaxThickness()*mScale;
 
 		//Draw
-		BezierBoardDrawUtil.paintSlidingCrossSection(jd, mImagableX+5+((mImagableWidth/3)*1),	currentY, 0.0, mScale, Color.BLACK, linestroke, false, true, UnitUtils.INCHES_PR_FOOT*UnitUtils.INCH, mBrd);
+		BezierBoardDrawUtil.paintSlidingCrossSection(jd, mImagableX+5+((mImagableWidth/3)*1),	currentY, mScale, 0.0,  Color.BLACK, linestroke, false, true, UnitUtils.INCHES_PR_FOOT*UnitUtils.INCH, mBrd);
 
-		BezierBoardDrawUtil.paintSlidingCrossSection(jd, mImagableX+5+((mImagableWidth/3)*2),	currentY, 0.0, mScale, Color.BLACK, linestroke, false, true, mBrd.getLength() - UnitUtils.INCHES_PR_FOOT*UnitUtils.INCH, mBrd);
+		BezierBoardDrawUtil.paintSlidingCrossSection(jd, mImagableX+5+((mImagableWidth/3)*2),	currentY, mScale, 0.0,  Color.BLACK, linestroke, false, true, mBrd.getLength() - UnitUtils.INCHES_PR_FOOT*UnitUtils.INCH, mBrd);
 
 		currentY += mNormalFontHeight;
 		String tailString = LanguageResource.getString("TAIL_STR");
@@ -1100,7 +1100,7 @@ public class PrintSpecSheet extends JComponent implements Printable {
 
 		Stroke linestroke = new BasicStroke((float)(2.0/mScale));
 		
-		BezierBoardDrawUtil.paintSlidingCrossSection(jd, mImagableX+5+mImagableWidth/2,	currentY, Math.PI/2.0, mScale, Color.BLACK, linestroke, false, true, mBrd.getLength()/2, mBrd);
+		BezierBoardDrawUtil.paintSlidingCrossSection(jd, mImagableX+5+mImagableWidth/2,	currentY, mScale, Math.PI/2.0, Color.BLACK, linestroke, false, true, mBrd.getLength()/2, mBrd);
 		
 		g2d.setFont(mPrintFontNormal);
 
@@ -1113,9 +1113,9 @@ public class PrintSpecSheet extends JComponent implements Printable {
 		currentY += mNormalFontHeight+10;
 
 		//Draw
-		BezierBoardDrawUtil.paintSlidingCrossSection(jd, mImagableX+5+((mImagableWidth/3)*1),	currentY, Math.PI/2.0, mScale, Color.BLACK, linestroke, false, true, UnitUtils.INCHES_PR_FOOT*UnitUtils.INCH, mBrd);
+		BezierBoardDrawUtil.paintSlidingCrossSection(jd, mImagableX+5+((mImagableWidth/3)*1),	currentY, mScale, Math.PI/2.0, Color.BLACK, linestroke, false, true, UnitUtils.INCHES_PR_FOOT*UnitUtils.INCH, mBrd);
 
-		BezierBoardDrawUtil.paintSlidingCrossSection(jd, mImagableX+5+((mImagableWidth/3)*2),	currentY, Math.PI/2.0, mScale, Color.BLACK, linestroke, false, true, mBrd.getLength() - UnitUtils.INCHES_PR_FOOT*UnitUtils.INCH, mBrd);
+		BezierBoardDrawUtil.paintSlidingCrossSection(jd, mImagableX+5+((mImagableWidth/3)*2),	currentY, mScale, Math.PI/2.0, Color.BLACK, linestroke, false, true, mBrd.getLength() - UnitUtils.INCHES_PR_FOOT*UnitUtils.INCH, mBrd);
 
 		currentY += mNormalFontHeight;
 		String tailString = LanguageResource.getString("TAIL_STR");

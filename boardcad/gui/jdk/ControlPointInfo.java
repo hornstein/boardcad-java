@@ -21,6 +21,8 @@ import javax.swing.border.TitledBorder;
 
 import cadcore.BezierKnot;
 import cadcore.UnitUtils;
+import boardcad.commands.BrdCommand;
+import boardcad.commands.BrdEditCommand;
 import boardcad.i18n.LanguageResource;
 
 public class ControlPointInfo extends JPanel {
@@ -49,6 +51,11 @@ public class ControlPointInfo extends JPanel {
 	public ControlPointInfo() {
 		super();
 		initialize();
+	}
+	
+	public BrdEditCommand getCmd()
+	{
+		return mCmd;
 	}
 
 	/**
@@ -260,6 +267,7 @@ public class ControlPointInfo extends JPanel {
 			mContinous.setText(LanguageResource.getString("CONTROLPOINTCONTINOUS_STR"));
 			mContinous.setToolTipText(LanguageResource.getString("CONTROLPOINTCONTINOUSTOOLTIP_STR"));
 			mContinous.addItemListener(new java.awt.event.ItemListener() {
+				@Override
 				public void itemStateChanged(java.awt.event.ItemEvent e) {
 					if(mBlockActions)
 						return;
@@ -283,6 +291,7 @@ public class ControlPointInfo extends JPanel {
 			SetButton.setText(LanguageResource.getString("CONTROLPOINTSET_STR"));
 			SetButton.setToolTipText(LanguageResource.getString("CONTROLPOINTSETTOOLTIP_STR"));
 			SetButton.addActionListener(new java.awt.event.ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					if(mBlockActions)
 						return;
@@ -294,6 +303,7 @@ public class ControlPointInfo extends JPanel {
 		return SetButton;
 	}
 
+	@Override
 	public void setEnabled(boolean enabled)
 	{
 		super.setEnabled(enabled);
@@ -385,6 +395,7 @@ public class ControlPointInfo extends JPanel {
 			setControlPointVerticalButton.setHorizontalTextPosition(SwingConstants.CENTER);
 			setControlPointVerticalButton
 					.addActionListener(new java.awt.event.ActionListener() {
+						@Override
 						public void actionPerformed(java.awt.event.ActionEvent e) {
 							BrdCommand cmd = BoardCAD.getInstance().getCurrentCommand();
 
@@ -411,6 +422,7 @@ public class ControlPointInfo extends JPanel {
 			setControlPointHorizontalButton.setToolTipText(LanguageResource.getString("CONTROLPOINTHORIZONTALTOOLTIP_STR"));
 			setControlPointHorizontalButton
 					.addActionListener(new java.awt.event.ActionListener() {
+						@Override
 						public void actionPerformed(java.awt.event.ActionEvent e)
 						{
 							BrdCommand cmd = BoardCAD.getInstance().getCurrentCommand();
